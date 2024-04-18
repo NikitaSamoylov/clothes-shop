@@ -1,0 +1,21 @@
+@import '../../styles/vars';
+
+.nav {
+  display: flex;
+  align-items: center;
+
+  &__list {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__link {
+    color: $primary-font-color;
+    font-size: 1.6rem;
+  }
+
+  &__item:not(:last-child) {
+    margin-right: 15px;
+  }
+}

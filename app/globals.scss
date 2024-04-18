@@ -1,0 +1,42 @@
+@import '../styles/vars';
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  color: rgb(19, 18, 18);
+  font-weight: 400;
+  font-size: 10px;
+}
+
+button {
+  cursor: pointer;
+  outline: none;
+  border: none;
+  background: transparent;
+}
+
+li {
+  list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+input {
+  outline: none;
+}
+
+.container {
+  width: $container-width;
+  margin: 0 auto;
+  padding: 0 $container-padding;
+}

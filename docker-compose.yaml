@@ -1,0 +1,23 @@
+version: '3'
+services:
+  # web:
+  #   build: .
+  #   container_name: webapp
+  #   depends_on:
+  #     - mongodb
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - /app/node_modules
+  #     - /app:/app
+  mongodb:
+    image: mongo:latest
+    restart: always
+    container_name: eshopbd
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    ports:
+      - "27017:27017"
+    volumes:
+      - "./data/db:/data/db"
