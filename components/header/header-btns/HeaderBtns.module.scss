@@ -1,11 +1,12 @@
 .btn {
 
   &__list {
+    position: relative;
     display: flex;
     align-items: center;
   }
 
-  &__item:not(:last-child) {
-    margin-right: 20px;
+  &__item {
+    margin-left: 20px;
   }
 }

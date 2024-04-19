@@ -1,0 +1,46 @@
+@import '../../../styles/vars';
+
+.userMenu {
+  position: absolute;
+  left: -71px;
+  top: 49px;
+  z-index: 10;
+  width: 190px;
+  background-color: #fff;
+  padding: 10px 15px;
+  border-radius: 5px;
+  -webkit-box-shadow: 1px 5px 10px 0px rgba(34, 60, 80, 0.15);
+  -moz-box-shadow: 1px 5px 10px 0px rgba(34, 60, 80, 0.15);
+  box-shadow: 1px 5px 10px 0px rgba(34, 60, 80, 0.15);
+
+  &__hello_item,
+  &__hello_name {
+    display: block;
+    font-size: 1.6rem;
+    color: $primary-font-color;
+    text-align: left;
+  }
+
+  &__hello_name {
+    color: rgb(48, 141, 161);
+  }
+
+  &__header {
+    border-bottom: 1px solid lightgrey;
+    padding-bottom: 10px;
+  }
+
+  &__body_link {
+    font-size: 1.6rem;
+    color: $primary-font-color;
+    cursor: pointer;
+  }
+
+  &__body {
+    padding-top: 15px;
+  }
+
+  &__body_item:not(:last-child) {
+    margin-bottom: 10px;
+  }
+}
