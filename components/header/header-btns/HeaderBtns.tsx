@@ -15,6 +15,10 @@ const HeaderBtns: React.FC = () => {
 
   const [menuState, setMenuState] = useState<boolean>(false);
 
+  const closeMenuPop = () => {
+    setMenuState(false);
+  };
+
   return (
     <div className={ styles.btn__list }>
       <button className={ styles.btn__item }>
@@ -52,7 +56,7 @@ const HeaderBtns: React.FC = () => {
       </button>
       {
         menuState &&
-        <AccountMenu />
+        <AccountMenu closeMenuPop={ closeMenuPop } />
       }
     </div>
   )

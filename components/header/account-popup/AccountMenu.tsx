@@ -9,12 +9,49 @@ declare module "next-auth" {
   interface Session {
     user?: {
       username: string;
+      role: string;
     } & DefaultSession["user"];
   }
-}
+};
 
-const AccountMenu: React.FC = () => {
-  const { data: session } = useSession();
+type TMenuPopProps = {
+  closeMenuPop: () => void;
+};
+
+const userMenuItems = [
+  {
+    title: 'аккаунт',
+    link: '/',
+  },
+  {
+    title: 'избранное',
+    link: '/',
+  },
+  {
+    title: 'корзина',
+    link: '/',
+  },
+  {
+    title: 'выйти',
+    action: () => signOut(),
+  },
+];
+
+const AccountMenu: React.FC<TMenuPopProps> = ({ closeMenuPop }) => {
+  const { data: session, status } = useSession();
+
+  const renderMenuItems = userMenuItems.map((el) => {
+    return (
+      <li className={ styles.userMenu__body_item } key={ el.title }>
+        <Link href={ el.link ? el.link : '' }
+          className={ styles.userMenu__body_link }
+          onClick={ el.action ? el.action : closeMenuPop }
+        >
+          { el.title }
+        </Link>
+      </li>
+    )
+  });
 
   return (
     <div className={ styles.userMenu }>
@@ -27,36 +64,22 @@ const AccountMenu: React.FC = () => {
         </span>
       </div>
       <ul className={ styles.userMenu__body }>
-        <li className={ styles.userMenu__body_item }>
-          <Link href=""
-            className={ styles.userMenu__body_link }
-          >
-            аккаунт
-          </Link>
-        </li>
-        <li className={ styles.userMenu__body_item }>
-          <Link href=""
-            className={ styles.userMenu__body_link }
-          >
-            избранное
-          </Link>
-        </li>
-        <li className={ styles.userMenu__body_item }>
-          <Link href=""
-            className={ styles.userMenu__body_link }
-          >
-            корзина
-          </Link>
-        </li>
-        <li className={ styles.userMenu__body_item }
-          onClick={ () => signOut() }
-        >
-          <Link href=""
-            className={ styles.userMenu__body_link }
-          >
-            выйти
-          </Link>
-        </li>
+        {
+          status === 'authenticated' &&
+            session?.user?.role === 'admin' ?
+            (
+              <li className={ styles.userMenu__body_item }>
+                <Link href="/admin"
+                  className={ styles.userMenu__body_link }
+                  onClick={ closeMenuPop }
+                >
+                  админ-панель
+                </Link>
+              </li>
+            ) :
+            null
+        }
+        { renderMenuItems }
       </ul>
     </div>
   )
