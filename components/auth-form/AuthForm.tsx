@@ -2,27 +2,48 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
+import { notifyError } from '@/utils/notify';
+import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import FormImage from './login_img.png';
+import { TInputsLogin } from '@/types/auth';
 import styles from './AuthForm.module.scss';
 
-type Inputs = {
-  username: string
-  password: string
-}
-
 const AuthForm: React.FC = () => {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
     reset,
-  } = useForm<Inputs>({
+  } = useForm<TInputsLogin>({
     mode: 'onBlur'
   });
 
-  const onSubmit = (data: Inputs) => {
-    alert(JSON.stringify(data))
-    reset();
+  const onSubmit = async (data: TInputsLogin) => {
+    try {
+      const res = await signIn("credentials", {
+        email: data.email.toLowerCase(),
+        password: data.password,
+        redirect: false,
+      });
+
+      if (res?.status === 200) {
+        reset();
+        router.push('/')
+      };
+
+      if (res?.status === 401) {
+        throw new Error('неверный логин или пароль')
+      };
+
+      if (res?.status !== 200 && res?.status !== 401) {
+        throw new Error('что-то пошло не так')
+      };
+    } catch (e: any) {
+      notifyError(e)
+    };
   };
 
   return (
@@ -33,35 +54,37 @@ const AuthForm: React.FC = () => {
           width={ FormImage.width }
           height={ FormImage.height }
           alt='фоновая картинка'
+          priority
         />
       </div>
       <form className={ styles.form }
         onSubmit={ handleSubmit(onSubmit) }
       >
-        <label htmlFor="name"
+        <label htmlFor="email"
           className={ styles.form__item_label }
         >
-          введите имя
-          <input type="text"
+          введите email
+          <input type="email"
             className={
               `${ styles.form__item }
             ${ styles.form__item_name }`
             }
-            id='name'
+            id='email'
             {
-            ...register("username", {
+            ...register("email", {
               required: 'заполните поле',
               minLength: {
                 value: 2,
                 message: 'минимум 2 символа'
-              }
+              },
+              pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
             })
             }
           />
           <span className={ styles.form__item_notice }>
             {
-              errors.username ?
-                errors.username.message :
+              errors.email ?
+                errors.email.message :
                 null
             }
           </span>

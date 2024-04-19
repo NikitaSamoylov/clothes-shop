@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
+import SessionProvider from "@/utils/SessionProvider";
+import { getServerSession } from "next-auth";
 import { Header } from "@/components/header";
 import "./globals.scss";
 
@@ -15,13 +17,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = getServerSession();
+
   return (
-    <html lang="en">
+    <html lang="ru">
       <body className={ nunito.className }>
-        <Header />
-        <main>
-          { children }
-        </main>
+        <SessionProvider session={ session }>
+          <Header />
+          <main>
+            { children }
+          </main>
+        </SessionProvider>
       </body>
     </html>
   );

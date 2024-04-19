@@ -2,31 +2,53 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
+import { notifyError } from '@/utils/notify';
 import FormImageSignup from './signup_img.png';
+import { TInputsSignup } from '@/types/auth';
+import { useRouter } from 'next/navigation';
 import styles from './SignupForm.module.scss';
 
-type Inputs = {
-  username: string,
-  password: string,
-  confirmPassword: string,
-}
-
 const SignupForm: React.FC = () => {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
     reset,
     watch,
-  } = useForm<Inputs>({
+  } = useForm<TInputsSignup>({
     mode: 'onBlur'
   })
 
-  const onSubmit = (data: Inputs) => {
-    alert(JSON.stringify(data))
-    reset();
-  };
+  const onSubmit = async (data: TInputsSignup) => {
 
+    try {
+      const resp = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: data.username,
+          email: data.email,
+          password: data.password,
+          role: 'user',
+        })
+      });
+
+      if (resp.status === 400) {
+        throw new Error('такой email уже есть')
+      }
+
+      if (resp.status === 200) {
+        reset();
+        router.push('/login')
+      }
+    } catch (e: any) {
+      notifyError(e)
+    }
+  };
 
   return (
     <section className={ styles.loginForm }>
@@ -36,12 +58,13 @@ const SignupForm: React.FC = () => {
           width={ FormImageSignup.width }
           height={ 491 }
           alt='фоновая картинка'
+          priority
         />
       </div>
       <form className={ styles.form }
         onSubmit={ handleSubmit(onSubmit) }
       >
-        <label htmlFor="name"
+        <label htmlFor="username"
           className={ styles.form__item_label }
         >
           введите имя
@@ -50,7 +73,7 @@ const SignupForm: React.FC = () => {
               `${ styles.form__item }
             ${ styles.form__item_name }`
             }
-            id='name'
+            id='username'
             {
             ...register("username", {
               required: 'заполните поле',
@@ -65,6 +88,35 @@ const SignupForm: React.FC = () => {
             {
               errors.username ?
                 errors.username.message :
+                null
+            }
+          </span>
+        </label>
+        <label htmlFor="email"
+          className={ styles.form__item_label }
+        >
+          введите email
+          <input type="email"
+            className={
+              `${ styles.form__item }
+            ${ styles.form__item_name }`
+            }
+            id='email'
+            {
+            ...register("email", {
+              required: 'заполните поле',
+              minLength: {
+                value: 2,
+                message: 'минимум 2 символа'
+              },
+              pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+            })
+            }
+          />
+          <span className={ styles.form__item_notice }>
+            {
+              errors.email ?
+                errors.email.message :
                 null
             }
           </span>
@@ -134,7 +186,7 @@ const SignupForm: React.FC = () => {
           className={ styles.form__btn }
           disabled={ !isValid }
         >
-          войти
+          создать аккаунт
         </button>
         <span className={ styles.form__msg }>
           Есть аккаунт?
