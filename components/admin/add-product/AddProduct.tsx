@@ -4,6 +4,7 @@ import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import { useForm } from 'react-hook-form';
 import { TProduct, TProductSize } from '@/types/product';
+import UploadImage from '@/app/upload/upload';
 import styles from './AddProduct.module.scss';
 
 const sizeOptions = [
@@ -23,7 +24,10 @@ const categoryOptions = [
 const AddProductForm: React.FC = () => {
   const [productSize, setProductSize] = useState<TProductSize[]>([]);
   const [category, setCategory] = useState<string>('');
+  const [productImgUrl, setProductImgUrl] = useState<string[]>([]);
   const [productOnSubmit, setProductOnSubmit] = useState<TProduct>();
+
+  console.log(productImgUrl)
 
   const {
     register,
@@ -206,6 +210,7 @@ const AddProductForm: React.FC = () => {
           }) }
           onChange={ (options: any) => setCategory(options) }
         />
+        <UploadImage setProductImgUrl={ (value) => setProductImgUrl(productImgUrl => [...productImgUrl, value]) } />
         <div>
           <button className={
             `${ styles.addProduct__btn } ${ styles.addProduct__btn_add } `

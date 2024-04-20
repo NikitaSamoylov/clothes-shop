@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import SessionProvider from "@/utils/SessionProvider";
 import { getServerSession } from "next-auth";
+import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { Header } from "@/components/header";
 import "./globals.scss";
 
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: React.PropsWithChildren<{
   children: React.ReactNode;
 }>) {
   const session = getServerSession();
@@ -22,12 +23,14 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={ nunito.className }>
-        <SessionProvider session={ session }>
-          <Header />
-          <main>
-            { children }
-          </main>
-        </SessionProvider>
+        <AntdRegistry>
+          <SessionProvider session={ session }>
+            <Header />
+            <main>
+              { children }
+            </main>
+          </SessionProvider>
+        </AntdRegistry>
       </body>
     </html>
   );
