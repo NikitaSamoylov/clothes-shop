@@ -1,13 +1,9 @@
-export type TProductSize = {
-  value: string;
-  label: string;
-};
-
 export type TProduct = {
   title: string;
   description: string;
-  price: string;
-  size: TProductSize;
-  category: string;
+  price: number;
+  sizes: string[];
+  category: string | null;
   images?: string[];
+  inStock: boolean;
 };

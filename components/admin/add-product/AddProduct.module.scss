@@ -62,8 +62,18 @@
     padding: 7px 15px;
     border-radius: 5px;
     transition: .3s;
-    border: 1px solid $form-btn-color;
+    border: 1px solid lightgrey;
     margin-top: 25px;
+    color: grey;
+  }
+
+  &__btn:disabled {
+    color: grey;
+  }
+
+  &__btn:hover:disabled {
+    background-color: #fff;
+    color: grey;
   }
 
   &__btn_add {

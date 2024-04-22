@@ -1,25 +1,44 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ImgStorage } from '@/firebase';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL
+} from 'firebase/storage';
 import { CgAttachment } from "react-icons/cg";
 import { GoTrash } from "react-icons/go";
 import { notifyInfo } from '@/utils/notify';
 import styles from './upload.module.scss';
 
 type TUploadProps = {
-  setProductImgUrl: (value: any) => void;
+  setProductImgUrl: (value: string) => void;
+  clearImg: boolean;
+  setClearImg: (value: boolean) => void;
 };
 
 const UploadImage: React.FC<TUploadProps> = (
-  { setProductImgUrl }
+  {
+    setProductImgUrl,
+    clearImg,
+    setClearImg
+  }
 ) => {
 
   const [imgList, setImgList] = useState<File[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [uploadedList, setUploadedList] = useState<string[]>([]);
 
+  useEffect(() => {
+    clearImg ?
+      setImgList([]) :
+      clearImg
+  }, [clearImg]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (clearImg) {
+      setClearImg(false);
+    };
 
     if (e.target.files) {
       Array.from(e.target.files)
@@ -27,6 +46,7 @@ const UploadImage: React.FC<TUploadProps> = (
           uploadedList.includes(el.name) ?
             notifyInfo(`фото ${ el.name } уже загружено`) :
             setImgList((imgList: File[]) => [...imgList, el])
+
         ))
     };
   };
@@ -69,13 +89,15 @@ const UploadImage: React.FC<TUploadProps> = (
           </label>
           {
             imgList.length !== 0 ?
-              (<input type='button'
-                onClick={ handleUpload }
-                className={
-                  `${ styles.upload__btn } ${ styles.upload__btn_submit }`
-                }
-                value={ isLoading ? 'загрузка...' : 'загрузить' }
-              />) :
+              (
+                <input type='button'
+                  onClick={ handleUpload }
+                  className={
+                    `${ styles.upload__btn } ${ styles.upload__btn_submit }`
+                  }
+                  value={ isLoading ? 'загрузка...' : 'загрузить' }
+                />
+              ) :
               null
           }
         </div>

@@ -2,7 +2,7 @@ import { AdminMenu } from "@/components/admin/admin-menu";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "панель администратора",
+  title: "TJ | Администратор",
 };
 
 export default function RootLayout({

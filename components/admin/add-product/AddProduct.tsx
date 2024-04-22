@@ -3,18 +3,29 @@ import { useState } from 'react';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import { useForm } from 'react-hook-form';
-import { TProduct, TProductSize } from '@/types/product';
+import { TProduct } from '@/types/product';
 import UploadImage from '@/app/upload/upload';
+import { notifyInfo } from '@/utils/notify';
 import styles from './AddProduct.module.scss';
 
-const sizeOptions = [
+type TSizeOptions = {
+  value: string;
+  label: string;
+};
+
+const sizeOptions: TSizeOptions[] = [
   { value: 'm', label: 'm' },
   { value: 'l', label: 'l' },
   { value: 'xl', label: 'xl' },
   { value: 'xxl', label: 'xxl' },
 ];
 
-const categoryOptions = [
+type TCategoryOptions = {
+  value: string;
+  label: string;
+};
+
+const categoryOptions: TCategoryOptions[] = [
   { value: 't-shirt', label: 'майки и футболки' },
   { value: 'trousers', label: 'брюки и джинсы' },
   { value: 'sweater', label: 'свитера и кардиганы' },
@@ -22,12 +33,11 @@ const categoryOptions = [
 ];
 
 const AddProductForm: React.FC = () => {
-  const [productSize, setProductSize] = useState<TProductSize[]>([]);
-  const [category, setCategory] = useState<string>('');
+  const [productSize, setProductSize] = useState<TSizeOptions[] | []>([]);
+  const [category, setCategory] = useState<TCategoryOptions | null>(null);
   const [productImgUrl, setProductImgUrl] = useState<string[]>([]);
-  const [productOnSubmit, setProductOnSubmit] = useState<TProduct>();
-
-  console.log(productImgUrl)
+  const [clearImg, setClearImg] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const {
     register,
@@ -38,8 +48,55 @@ const AddProductForm: React.FC = () => {
     mode: 'onBlur'
   });
 
-  const onSubmit = (data: TProduct) => {
-    console.log(data)
+  const onReset = () => {
+    reset();
+    setProductSize([]);
+    setProductImgUrl([]);
+    setClearImg(true);
+  };
+
+  const onSubmit = async (data: TProduct) => {
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/new-product', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: data.title.toLowerCase().trim(),
+          description: data.description.trim(),
+          price: +data.price,
+          sizes: productSize.map(el => el.value),
+          category: category ? category.value.trim() : null,
+          images: productImgUrl,
+          inStock: true,
+        })
+      });
+
+      if (response.status === 200) {
+        notifyInfo('Продукт добавлен');
+        onReset();
+      };
+
+      if (response.status === 400) {
+        notifyInfo('Такой продукт уже добавлен')
+      };
+
+      if (
+        response.status !== 200 &&
+        response.status !== 400
+      ) {
+        notifyInfo('что-то пошло не так')
+      }
+
+      setIsLoading(false);
+
+    } catch (err: any) {
+      console.log(err)
+      setIsLoading(false);
+    };
   };
 
   const animatedComponents = makeAnimated();
@@ -210,17 +267,34 @@ const AddProductForm: React.FC = () => {
           }) }
           onChange={ (options: any) => setCategory(options) }
         />
-        <UploadImage setProductImgUrl={ (value) => setProductImgUrl(productImgUrl => [...productImgUrl, value]) } />
+        <UploadImage
+          setProductImgUrl={
+            (value) => setProductImgUrl(
+              productImgUrl => [...productImgUrl, value]
+            )
+          }
+          clearImg={ clearImg }
+          setClearImg={ (value: boolean) => setClearImg(value) }
+        />
         <div>
           <button className={
             `${ styles.addProduct__btn } ${ styles.addProduct__btn_add } `
           }
-            disabled={ !isValid || category === '' || productSize.length === 0 }
+            disabled={
+              !isValid ||
+              category === null ||
+              productSize.length === 0 ||
+              productImgUrl.length === 0
+            }
           >
-            Добавить товар
+            {
+              isLoading ?
+                'Загрузка товара...' :
+                ' Добавить товар'
+            }
           </button>
           <button className={ styles.addProduct__btn }
-
+            onClick={ onReset }
           >
             очистить форму
           </button>
