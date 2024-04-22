@@ -2,10 +2,10 @@
 import React, { useState } from 'react';
 import { ImgStorage } from '@/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { Upload, Button, Flex, ConfigProvider } from 'antd';
-import { UploadFile } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { CgAttachment } from "react-icons/cg";
+import { GoTrash } from "react-icons/go";
 import { notifyInfo } from '@/utils/notify';
+import styles from './upload.module.scss';
 
 type TUploadProps = {
   setProductImgUrl: (value: any) => void;
@@ -15,99 +15,97 @@ const UploadImage: React.FC<TUploadProps> = (
   { setProductImgUrl }
 ) => {
 
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [infoUpload, setInfoUpload] = useState<boolean>(false);
+  const [imgList, setImgList] = useState<File[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [uploadedList, setUploadedList] = useState<string[]>([]);
 
-  const addFilesOnUploading = (info: any) => {
-    info.fileList = []
-    info.file.status === 'done' ?
-      setFileList(
-        (fileList: any) => [...fileList, info]
-      ) :
-      info.file.status
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    if (e.target.files) {
+      Array.from(e.target.files)
+        .map((el: File) => (
+          uploadedList.includes(el.name) ?
+            notifyInfo(`фото ${ el.name } уже загружено`) :
+            setImgList((imgList: File[]) => [...imgList, el])
+        ))
+    };
   };
 
-  const deleteUploadedImg = async (info: UploadFile) => {
-    setFileList(
-      fileList.filter(
-        (el: any) => el.file.name !== info.name
-      )
-    );
-  };
-
-  const uploadFiles = () => {
+  const handleUpload = () => {
+    setIsLoading(true);
     let fileRef: any;
-    fileList.map(async (el) => {
-      fileRef = ref(ImgStorage, el.file.name);
-      await uploadBytesResumable(fileRef, el.file.originFileObj)
+    imgList.map(async (el) => {
+      fileRef = ref(ImgStorage, el.name);
+      await uploadBytesResumable(fileRef, el)
         .then((snapshot) => {
           getDownloadURL(snapshot.ref)
             .then((url) => setProductImgUrl(url))
-            .then(() => setFileList([]))
-            .then(() => notifyInfo('фото загружены'))
-            .then(() => setInfoUpload(infoUpload => !infoUpload))
         })
+        .then(() => notifyInfo(`фото ${ el.name } загружено`))
+        .then(() => setIsLoading(false))
+        .then(() => (
+          setUploadedList(
+            (uploadedList) => [...uploadedList, el.name]
+          )
+        ))
+        .then(() => setImgList([]))
         .catch(() => notifyInfo('ошибка загрузки фото'))
     })
   };
 
+  const handleItemRemove = (item: string) => {
+    setImgList(imgList => imgList.filter(el => el.name !== item))
+  };
+
   return (
-    <Flex style={ { marginTop: '25px' } }>
-      <Upload
-        onChange={ addFilesOnUploading }
-        onRemove={ deleteUploadedImg }
-        showUploadList={ fileList.length !== 0 ? true : false }
-      >
-        <ConfigProvider
-          theme={ {
-            components: {
-              Button: {
-                defaultHoverBorderColor: 'grey',
-                defaultHoverColor: 'black'
-              },
-            },
-          } }
-        >
-          <Button icon={ <UploadOutlined /> }>
-            Добавьте фото
-          </Button>
+    <>
+      <div className={ styles.upload }>
+        <div className={ styles.upload__header }>
+          <label className={ styles.upload__btn }>
+            выберите фото
+            <input type="file"
+              style={ { display: 'none' } }
+              multiple onChange={ handleChange } />
+          </label>
           {
-            infoUpload ?
+            imgList.length !== 0 ?
+              (<input type='button'
+                onClick={ handleUpload }
+                className={
+                  `${ styles.upload__btn } ${ styles.upload__btn_submit }`
+                }
+                value={ isLoading ? 'загрузка...' : 'загрузить' }
+              />) :
+              null
+          }
+        </div>
+        <ul className={ styles.upload__list }>
+          {
+            imgList.length !== 0 ?
               (
-                <span style={ {
-                  marginLeft: '15px', color: '#10708b'
-                } }>
-                  Фото загружены
-                </span>
+                imgList.map(el => {
+                  return (
+                    <li key={ el.name }
+                      className={ styles.upload__item }
+                    >
+                      <CgAttachment />
+                      <p className={ styles.upload__title }>
+                        { el.name }
+                      </p>
+                      <GoTrash size={ 13 }
+                        color={ 'grey' }
+                        style={ { cursor: 'pointer' } }
+                        onClick={ () => handleItemRemove(el.name) }
+                      />
+                    </li>
+                  )
+                })
               ) :
               null
           }
-        </ConfigProvider>
-      </Upload>
-      {
-        fileList.length !== 0 ?
-          (
-            <ConfigProvider
-              theme={ {
-                components: {
-                  Button: {
-                    defaultHoverBorderColor: 'grey',
-                    defaultHoverColor: 'black'
-                  },
-                },
-              } }
-            >
-              <Button className='button'
-                style={ { marginLeft: 10 } }
-                onClick={ uploadFiles }
-              >
-                загрузить
-              </Button>
-            </ConfigProvider>
-          ) :
-          null
-      }
-    </Flex>
+        </ul>
+      </div>
+    </>
   )
 }
 

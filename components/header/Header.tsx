@@ -28,7 +28,7 @@ const Header: React.FC = () => {
           toastOptions={ {
             duration: 3000,
             style: {
-              background: '#10708b',
+              background: '#5b9fb3',
               color: '#fff',
               fontSize: '16px',
             },

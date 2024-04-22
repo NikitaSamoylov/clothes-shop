@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import SessionProvider from "@/utils/SessionProvider";
 import { getServerSession } from "next-auth";
-import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { Header } from "@/components/header";
 import "./globals.scss";
 
@@ -23,14 +22,12 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={ nunito.className }>
-        <AntdRegistry>
-          <SessionProvider session={ session }>
-            <Header />
-            <main>
-              { children }
-            </main>
-          </SessionProvider>
-        </AntdRegistry>
+        <SessionProvider session={ session }>
+          <Header />
+          <main>
+            { children }
+          </main>
+        </SessionProvider>
       </body>
     </html>
   );
