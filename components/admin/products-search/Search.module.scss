@@ -1,0 +1,18 @@
+.search {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 25px;
+
+  &__input {
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    font-size: 1.6rem;
+    padding: 5px 10px;
+    padding-right: 25px;
+  }
+
+  &__input:focus {
+    outline: 2px solid rgb(170 229 240);
+  }
+}

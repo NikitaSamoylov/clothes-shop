@@ -16,7 +16,6 @@ export const POST = async (request: any) => {
   await connect();
 
   const existingProduct = await Product.findOne({ title });
-  console.log(existingProduct)
 
   if (existingProduct) {
     return NextResponse.json(
@@ -47,3 +46,23 @@ export const POST = async (request: any) => {
     );
   }
 };
+
+export const GET = async () => {
+  await connect();
+  const products = await Product.find();
+
+  if (!products) {
+    return NextResponse.json(
+      { message: "товаров нет" },
+      { status: 400 }
+    );
+  }
+  return NextResponse.json({ products });
+};
+
+export const DELETE = async (request: any) => {
+  const id = request.nextUrl.searchParams.get("id");
+  await connect();
+  await Product.findByIdAndDelete(id);
+  return NextResponse.json({ message: "Product deleted" }, { status: 200 });
+}
