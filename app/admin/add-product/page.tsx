@@ -3,11 +3,19 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import styles from './AddProduct.module.scss';
 import { redirect } from 'next/navigation';
 import { AddProductForm } from '@/components/admin/add-product';
+import { TAuthSessionUser } from '@/types/auth';
 
 const AddProductPage: React.FC = async () => {
-  const session = await getServerSession(authOptions);
+  const session: TAuthSessionUser | null = await getServerSession(authOptions);
 
   if (!session) {
+    redirect('/')
+  };
+
+  if (
+    session &&
+    session.user.role !== 'admin'
+  ) {
     redirect('/')
   };
 
