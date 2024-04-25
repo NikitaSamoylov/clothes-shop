@@ -65,4 +65,43 @@ export const DELETE = async (request: any) => {
   await connect();
   await Product.findByIdAndDelete(id);
   return NextResponse.json({ message: "Product deleted" }, { status: 200 });
-}
+};
+
+export const PUT = async (request: any) => {
+  const {
+    _id,
+    title,
+    description,
+    price,
+    inStock,
+    category
+  } = await request.json();
+
+  await connect();
+
+  const existingProduct = await Product.findOne({ _id });
+
+  if (!existingProduct) {
+    return NextResponse.json(
+      { msg: "товар не найден" },
+      { status: 400 }
+    );
+  };
+
+
+  try {
+    await Product.findOneAndUpdate({ _id }, {
+      title, description, price, inStock, category
+    }, {
+      new: true
+    })
+    return NextResponse.json(
+      { msg: "товар обновлен" },
+      { status: 200 }
+    );
+  } catch (err: any) {
+    return NextResponse.json({ msg: err.message },
+      { status: 500, }
+    );
+  }
+};

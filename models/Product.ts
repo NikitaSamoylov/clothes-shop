@@ -9,7 +9,6 @@ const productSchema = new Schema(
       minLength: [2, "имя от 2 символов"],
       required: [true, "введите название"],
       trim: true,
-      lowercase: true
     },
     description: {
       type: String,
@@ -34,8 +33,8 @@ const productSchema = new Schema(
     },
     images: [
       {
-        type: String,
-        required: [true, "не загружены фото"],
+        link: String,
+        name: String
       }
     ],
     inStock: {

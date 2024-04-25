@@ -1,3 +1,8 @@
+export type TProductImages = {
+  link: string;
+  name: string;
+};
+
 export type TProduct = {
   _id?: string;
   title: string;
@@ -5,6 +10,6 @@ export type TProduct = {
   price: number;
   sizes: string[];
   category: string | null;
-  images?: string[];
+  images?: TProductImages[];
   inStock: boolean;
 };

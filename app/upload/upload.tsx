@@ -4,15 +4,17 @@ import { ImgStorage } from '@/firebase';
 import {
   ref,
   uploadBytesResumable,
-  getDownloadURL
+  getDownloadURL,
+  deleteObject
 } from 'firebase/storage';
 import { CgAttachment } from "react-icons/cg";
 import { GoTrash } from "react-icons/go";
 import { notifyInfo } from '@/utils/notify';
+import { TProductImages } from '@/types/product';
 import styles from './upload.module.scss';
 
 type TUploadProps = {
-  setProductImgUrl: (value: string) => void;
+  setProductImgUrl: (value: TProductImages) => void;
   clearImg: boolean;
   setClearImg: (value: boolean) => void;
 };
@@ -21,7 +23,7 @@ const UploadImage: React.FC<TUploadProps> = (
   {
     setProductImgUrl,
     clearImg,
-    setClearImg
+    setClearImg,
   }
 ) => {
 
@@ -46,7 +48,6 @@ const UploadImage: React.FC<TUploadProps> = (
           uploadedList.includes(el.name) ?
             notifyInfo(`фото ${ el.name } уже загружено`) :
             setImgList((imgList: File[]) => [...imgList, el])
-
         ))
     };
   };
@@ -54,12 +55,14 @@ const UploadImage: React.FC<TUploadProps> = (
   const handleUpload = () => {
     setIsLoading(true);
     let fileRef: any;
+
     imgList.map(async (el) => {
       fileRef = ref(ImgStorage, el.name);
       await uploadBytesResumable(fileRef, el)
         .then((snapshot) => {
           getDownloadURL(snapshot.ref)
-            .then((url) => setProductImgUrl(url))
+            .then((url) => setProductImgUrl({ link: url, name: el.name }))
+          // .then((url) => setProductImgUrl(url))
         })
         .then(() => notifyInfo(`фото ${ el.name } загружено`))
         .then(() => setIsLoading(false))
@@ -129,6 +132,12 @@ const UploadImage: React.FC<TUploadProps> = (
       </div>
     </>
   )
-}
+};
+
+export const deleteUploadedImg = async (name: string) => {
+  const desertRef = ref(ImgStorage, name);
+
+  await deleteObject(desertRef);
+};
 
 export default UploadImage;

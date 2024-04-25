@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import { useForm } from 'react-hook-form';
-import { TProduct } from '@/types/product';
+import { TProduct, TProductImages } from '@/types/product';
 import UploadImage from '@/app/upload/upload';
 import { notifyInfo } from '@/utils/notify';
 import styles from './AddProduct.module.scss';
@@ -26,16 +26,16 @@ type TCategoryOptions = {
 };
 
 const categoryOptions: TCategoryOptions[] = [
-  { value: 't-shirt', label: 'майки и футболки' },
-  { value: 'trousers', label: 'брюки и джинсы' },
-  { value: 'sweater', label: 'свитера и кардиганы' },
-  { value: 'jackets', label: 'куртки и пальто' },
+  { value: 'майки', label: 'майки и футболки' },
+  { value: 'штаны', label: 'брюки и джинсы' },
+  { value: 'свитеры', label: 'свитера и кардиганы' },
+  { value: 'куртки', label: 'куртки и пальто' },
 ];
 
 const AddProductForm: React.FC = () => {
   const [productSize, setProductSize] = useState<TSizeOptions[] | []>([]);
   const [category, setCategory] = useState<TCategoryOptions | null>(null);
-  const [productImgUrl, setProductImgUrl] = useState<string[]>([]);
+  const [productImgUrl, setProductImgUrl] = useState<TProductImages[]>([]);
   const [clearImg, setClearImg] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -65,7 +65,7 @@ const AddProductForm: React.FC = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          title: data.title.toLowerCase().trim(),
+          title: data.title.trim(),
           description: data.description.trim(),
           price: +data.price,
           sizes: productSize.map(el => el.value),

@@ -3,19 +3,15 @@ import { useEffect, useState } from 'react';
 import NextImage from 'next/image';
 import DataTable from 'react-data-table-component';
 import { TableStyles } from 'react-data-table-component';
-// import { defaultThemes } from 'react-data-table-component';
 import { uploadProducts } from '@/utils/request';
+import { LuTrash2 } from "react-icons/lu";
+import { RiEditLine } from "react-icons/ri";
 import { TProduct } from '@/types/product';
 import { ProductSearch } from '../products-search';
-import styles from './ProductsList.module.scss';
+import { deleteUploadedImg } from '@/app/upload/upload';
 import { notifyInfo, notifyError } from '@/utils/notify';
-
-const defaultThemes = {
-  selected: {
-    default: '#77cfed',
-    text: '#FFFFFF',
-  }
-};
+import { EditProduct } from '../edit-product-form';
+import styles from './ProductsList.module.scss';
 
 const customStyles: TableStyles | undefined = {
   rows: {
@@ -63,7 +59,10 @@ const customStyles: TableStyles | undefined = {
 const ProductsList: React.FC = () => {
   const [products, setProducts] = useState<TProduct[]>([]);
   const [pending, setPending] = useState<boolean>(true);
+  const [removeBtnLoading, setRemoveBtnLoading] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>('');
+  const [isPopup, setIsPopup] = useState<boolean>(false);
+  const [productForEdit, setProductForEdit] = useState<TProduct | null>(null);
 
   const clearSearch = () => {
     setSearchValue('');
@@ -121,6 +120,11 @@ const ProductsList: React.FC = () => {
       sortable: true,
     },
     {
+      name: 'Наличие',
+      selector: (row: any) => row.inStock,
+      sortable: true,
+    },
+    {
       name: 'Действия',
       button: true,
       selector: (row: any) => row.actions,
@@ -128,10 +132,12 @@ const ProductsList: React.FC = () => {
   ];
 
   const removeProduct = async (
-    value: string | undefined
+    value: TProduct
   ) => {
+    setRemoveBtnLoading(true);
+
     try {
-      const response = await fetch(`/api/new-product?id=${ value }`, {
+      const response = await fetch(`/api/new-product?id=${ value._id }`, {
         method: 'DELETE'
       });
 
@@ -140,13 +146,23 @@ const ProductsList: React.FC = () => {
       };
 
       if (response.ok) {
+        value.images?.map(async (el) => (
+          await deleteUploadedImg(el.name)
+        ));
         notifyInfo('Товар удален');
+        setRemoveBtnLoading(false);
         getProducts();
       };
 
     } catch (e: any) {
+      setRemoveBtnLoading(false);
       notifyError(e)
     }
+  };
+
+  const addProductForEdit = (product: TProduct) => {
+    setProductForEdit(product);
+    setIsPopup(isPopup => !isPopup);
   };
 
   const tableData = filteredData.map((el: TProduct, index: number) => {
@@ -155,11 +171,24 @@ const ProductsList: React.FC = () => {
       title: el.title,
       price: el.price,
       stock: el.inStock,
+      inStock: el.inStock ? 'да' : 'нет',
       category: el.category,
-      actions: <button onClick={ () => removeProduct(el._id) }>
-        Удалить
-      </button>,
-      image: el.images ? el.images[0] : null,
+      actions: <div style={ { display: 'flex' } }>
+        <button onClick={ () => removeProduct(el) }
+          style={ { marginRight: '10px' } }
+          disabled={ removeBtnLoading ? true : false }
+        >
+          <LuTrash2 size={ 17 } color="grey" />
+        </button>
+        <button
+          onClick={
+            () => addProductForEdit(el)
+          }
+        >
+          <RiEditLine size={ 17 } color="grey" />
+        </button>
+      </div>,
+      image: el.images ? el.images[0].link : null,
     }
   });
 
@@ -196,6 +225,12 @@ const ProductsList: React.FC = () => {
             Нет данных для отображения
           </h2>
         }
+      />
+      <EditProduct
+        setIsPopup={ () => setIsPopup(isPopup => !isPopup) }
+        isPopup={ isPopup }
+        productForEdit={ productForEdit }
+        getProducts={ () => getProducts() }
       />
     </>
   )
