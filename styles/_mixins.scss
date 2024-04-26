@@ -1,0 +1,13 @@
+@import './vars';
+
+@mixin laptop {
+  @media (max-width: $laptop) {
+    @content;
+  }
+}
+
+@mixin mobile-landscape {
+  @media (max-width: $mobile-landscape) {
+    @content;
+  }
+}

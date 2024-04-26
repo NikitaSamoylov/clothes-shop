@@ -1,9 +1,15 @@
+@import '../../../styles/mixins';
+
 .btn {
 
   &__list {
     position: relative;
     display: flex;
     align-items: center;
+
+    // @include mobile-landscape {
+    //   display: none;
+    // }
   }
 
   &__item {

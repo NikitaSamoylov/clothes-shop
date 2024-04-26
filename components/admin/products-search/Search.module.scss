@@ -1,8 +1,14 @@
+@import '../../../styles/mixins';
+
 .search {
   position: relative;
   display: flex;
   justify-content: flex-end;
   margin-bottom: 25px;
+
+  @include mobile-landscape {
+    justify-content: center;
+  }
 
   &__input {
     border: 1px solid lightgrey;

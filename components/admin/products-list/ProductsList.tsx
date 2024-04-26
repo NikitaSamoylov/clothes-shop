@@ -19,7 +19,8 @@ const customStyles: TableStyles | undefined = {
       minHeight: '72px',
       justifyContent: 'center',
       paddingTop: '7px',
-      paddingBottom: '7px'
+      paddingBottom: '7px',
+      overflowX: 'auto'
     },
   },
   headCells: {
@@ -88,7 +89,7 @@ const ProductsList: React.FC = () => {
   };
 
   useEffect(() => {
-    getProducts()
+    getProducts();
   }, []);
 
   const columns = [
@@ -175,7 +176,7 @@ const ProductsList: React.FC = () => {
       category: el.category,
       actions: <div style={ { display: 'flex' } }>
         <button onClick={ () => removeProduct(el) }
-          style={ { marginRight: '10px' } }
+          style={ { marginRight: '15px' } }
           disabled={ removeBtnLoading ? true : false }
         >
           <LuTrash2 size={ 17 } color="grey" />
@@ -203,7 +204,9 @@ const ProductsList: React.FC = () => {
     <>
       <ProductSearch
         searchValue={ searchValue }
-        addSearchValue={ (value: string) => addSearchValue(value) }
+        addSearchValue={
+          (value: string) => addSearchValue(value)
+        }
         clearSearch={ () => clearSearch() }
       />
       <DataTable

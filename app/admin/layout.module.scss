@@ -1,0 +1,11 @@
+@import '../../styles/mixins';
+
+.adminSection {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  @include laptop {
+    display: block;
+  }
+}

@@ -1,5 +1,6 @@
 import { AdminMenu } from "@/components/admin/admin-menu";
 import type { Metadata } from "next";
+import styles from './layout.module.scss';
 
 export const metadata: Metadata = {
   title: "TJ | Администратор",
@@ -14,11 +15,9 @@ export default function RootLayout({
   return (
     <main>
       <div className="container">
-        <section style={ {
-          display: 'flex',
-          alignItems: 'flex-start',
-          justifyContent: 'space-between'
-        } }>
+        <section
+          className={ styles.adminSection }
+        >
           <AdminMenu />
           { children }
         </section>
