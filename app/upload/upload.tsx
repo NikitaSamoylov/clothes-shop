@@ -61,10 +61,13 @@ const UploadImage: React.FC<TUploadProps> = (
       await uploadBytesResumable(fileRef, el)
         .then((snapshot) => {
           getDownloadURL(snapshot.ref)
-            .then((url) => setProductImgUrl({ link: url, name: el.name }))
-          // .then((url) => setProductImgUrl(url))
+            .then((url) => setProductImgUrl(
+              { link: url, name: el.name }
+            ))
         })
-        .then(() => notifyInfo(`фото ${ el.name } загружено`))
+        .then(() => (
+          notifyInfo(`фото ${ el.name } загружено`)
+        ))
         .then(() => setIsLoading(false))
         .then(() => (
           setUploadedList(

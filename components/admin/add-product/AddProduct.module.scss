@@ -1,4 +1,5 @@
 @import '../../../styles/vars';
+@import '../../../styles/mixins';
 
 .addProduct {
 
@@ -19,6 +20,14 @@
     font-size: 1.6rem;
     font-family: inherit;
     transition: .1s;
+
+    @include mobile-landscape {
+      width: 340px;
+    }
+
+    @include mobile {
+      width: 276px;
+    }
   }
 
   &__input:focus {
@@ -54,6 +63,13 @@
     font-size: 1.4rem;
     color: $primary-font-color;
     margin-bottom: 10px;
+  }
+
+  &__btns {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
   }
 
   &__btn {

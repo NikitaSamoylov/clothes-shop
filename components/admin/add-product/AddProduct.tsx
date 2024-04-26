@@ -276,7 +276,7 @@ const AddProductForm: React.FC = () => {
           clearImg={ clearImg }
           setClearImg={ (value: boolean) => setClearImg(value) }
         />
-        <div>
+        <div className={ styles.addProduct__btns }>
           <button className={
             `${ styles.addProduct__btn } ${ styles.addProduct__btn_add } `
           }

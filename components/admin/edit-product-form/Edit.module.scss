@@ -1,7 +1,16 @@
 @import '../../../styles//vars';
+@import '../../../styles//mixins';
 
 .editForm {
   width: 450px;
+
+  @include mobile-landscape {
+    width: 330px;
+  }
+
+  @include mobile {
+    width: 250px;
+  }
 
   &__label {
     display: block;
