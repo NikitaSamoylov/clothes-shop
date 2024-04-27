@@ -11,6 +11,7 @@ export const POST = async (request: any) => {
     category,
     images,
     inStock,
+    brand,
   } = await request.json();
 
   await connect();
@@ -32,6 +33,7 @@ export const POST = async (request: any) => {
     category,
     images,
     inStock,
+    brand
   });
 
   try {
@@ -49,7 +51,7 @@ export const POST = async (request: any) => {
 
 export const GET = async () => {
   await connect();
-  const products = await Product.find();
+  const products = await Product.find().limit(12);
 
   if (!products) {
     return NextResponse.json(

@@ -21,9 +21,6 @@ const AdminPage: React.FC = async () => {
 
   return (
     <div className={ styles.admin }>
-      <h3 className={ styles.admin__title }>
-        Товаров пока нет
-      </h3>
       <ProductsList />
     </div>
   )

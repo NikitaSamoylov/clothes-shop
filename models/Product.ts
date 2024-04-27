@@ -26,6 +26,9 @@ const productSchema = new Schema(
         required: [true, "выберите размеры"],
       }
     ],
+    brand: {
+      type: String
+    },
     category: {
       type: String,
       required: [true, "выберите категорию"],

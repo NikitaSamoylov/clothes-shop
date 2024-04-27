@@ -11,7 +11,7 @@ type PopUpProps = {
   setIsPopup: () => void;
   isPopup: boolean;
   productForEdit: TProduct | null;
-  getProducts: () => void;
+  loadProduct: () => void;
 };
 
 type TPreloadedData = {
@@ -47,7 +47,7 @@ const inStockOptions: TinStockOptions[] = [
 ];
 
 const EditProduct: React.FC<PopUpProps> = (
-  { setIsPopup, isPopup, productForEdit, getProducts }
+  { setIsPopup, isPopup, productForEdit, loadProduct }
 ) => {
   const animatedComponents = makeAnimated();
 
@@ -118,7 +118,7 @@ const EditProduct: React.FC<PopUpProps> = (
         notifyInfo('Товар обновлен');
         response.json();
         setIsPopup();
-        getProducts()
+        loadProduct()
       }
     } catch (e: any) {
       notifyError(e);

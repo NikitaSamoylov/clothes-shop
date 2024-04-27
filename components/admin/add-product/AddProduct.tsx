@@ -32,9 +32,22 @@ const categoryOptions: TCategoryOptions[] = [
   { value: 'куртки', label: 'куртки и пальто' },
 ];
 
+type TBrandOptions = {
+  value: string;
+  label: string;
+};
+
+const brandOptions: TBrandOptions[] = [
+  { value: 'Pull & Bear', label: 'Pull & Bear' },
+  { value: 'Bershka', label: 'Bershka' },
+  { value: 'Incity', label: 'Incity' },
+  { value: 'Incanto', label: 'Incanto' },
+];
+
 const AddProductForm: React.FC = () => {
   const [productSize, setProductSize] = useState<TSizeOptions[] | []>([]);
   const [category, setCategory] = useState<TCategoryOptions | null>(null);
+  const [brand, setBrand] = useState<string>('');
   const [productImgUrl, setProductImgUrl] = useState<TProductImages[]>([]);
   const [clearImg, setClearImg] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -72,6 +85,7 @@ const AddProductForm: React.FC = () => {
           category: category ? category.value.trim() : null,
           images: productImgUrl,
           inStock: true,
+          brand: brand ? brand.trim() : null
         })
       });
 
@@ -194,7 +208,9 @@ const AddProductForm: React.FC = () => {
             closeMenuOnSelect={ false }
             isMulti
             placeholder={ 'выберите размеры' }
-            noOptionsMessage={ () => 'варианты закончились' }
+            noOptionsMessage={
+              () => 'варианты закончились'
+            }
             styles={ {
               placeholder: (baseStyles) => ({
                 ...baseStyles,
@@ -228,16 +244,56 @@ const AddProductForm: React.FC = () => {
                 primary: '#c5e8f2',
               },
             }) }
-            onChange={ (options: any) => setProductSize(options) }
+            onChange={
+              (options: any) => setProductSize(options)
+            }
           />
         </div>
         <span className={ styles.addProduct__size_title }>
           категория
         </span>
-        <Select options={ categoryOptions }
+        <div style={ { marginBottom: 10 } }>
+          <Select options={ categoryOptions }
+            components={ animatedComponents }
+            closeMenuOnSelect={ true }
+            placeholder={ 'выберите категорию' }
+            styles={ {
+              placeholder: (baseStyles) => ({
+                ...baseStyles,
+                color: 'grey',
+                fontSize: '1.4rem'
+              }),
+              menuList: (baseStyles) => ({
+                ...baseStyles,
+                color: 'black',
+                fontSize: '1.4rem'
+              }),
+              singleValue: (baseStyles) => ({
+                ...baseStyles,
+                color: 'black',
+                fontSize: '1.4rem',
+              }),
+            } }
+            theme={ (theme) => ({
+              ...theme,
+              borderRadius: 5,
+              outline: 'none',
+              colors: {
+                ...theme.colors,
+                primary25: '#c5e8f2',
+                primary: '#c5e8f2',
+              },
+            }) }
+            onChange={ (options: any) => setCategory(options) }
+          />
+        </div>
+        <span className={ styles.addProduct__size_title }>
+          бренд
+        </span>
+        <Select options={ brandOptions }
           components={ animatedComponents }
           closeMenuOnSelect={ true }
-          placeholder={ 'выберите категорию' }
+          placeholder={ 'выберите бренд' }
           styles={ {
             placeholder: (baseStyles) => ({
               ...baseStyles,
@@ -265,7 +321,7 @@ const AddProductForm: React.FC = () => {
               primary: '#c5e8f2',
             },
           }) }
-          onChange={ (options: any) => setCategory(options) }
+          onChange={ (options: any) => setBrand(options.value) }
         />
         <UploadImage
           setProductImgUrl={

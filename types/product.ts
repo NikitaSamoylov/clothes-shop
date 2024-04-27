@@ -12,4 +12,11 @@ export type TProduct = {
   category: string | null;
   images?: TProductImages[];
   inStock: boolean;
+  brand: string;
+};
+
+export type TProductForUpload = TProduct & {
+  createdAt: string;
+  updatedAt: string;
+  _v: number;
 };

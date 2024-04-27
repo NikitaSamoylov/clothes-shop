@@ -1,0 +1,35 @@
+.filters {
+  width: 125px;
+  margin-right: 50px;
+
+  &__title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  &__list {
+    margin-bottom: 20px;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+  }
+
+  &__item:not(:last-child) {
+    margin-bottom: 5px;
+  }
+
+  &__name {
+    font-size: 1.6rem;
+  }
+
+  &__checkbox {
+    width: 15px;
+    height: 15px;
+    border: 1px solid rgb(173, 171, 171);
+    border-radius: 3px;
+    margin-right: 7px;
+  }
+}

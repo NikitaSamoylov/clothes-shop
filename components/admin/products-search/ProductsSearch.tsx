@@ -17,6 +17,7 @@ const ProductSearch: React.FC<ProductSearchProps> = (
         className={ styles.search__input }
         onChange={ (e) => addSearchValue(e.target.value) }
         value={ searchValue }
+        placeholder="поиск товара"
       />
       {
         searchValue !== '' ?
