@@ -2,6 +2,7 @@ import Product from "@/models/Product";
 import connect from "@/dbConnect/dbConnect";
 import { NextResponse } from "next/server";
 import { constants } from "crypto";
+import { SortOrder } from "react-data-table-component";
 
 export const POST = async (request: any) => {
   const {
@@ -55,8 +56,9 @@ export const GET = async (request: any) => {
   const limit = request.nextUrl.searchParams.get("limit");
   const order = request.nextUrl.searchParams.get("sort");
 
-  const priceOrder = order === 1 ? '-' : '';
-  console.log(priceOrder);
+  console.log(typeof order)
+
+  const priceOrder = order === 'asc' ? '' : '-';
 
   await connect();
 
@@ -66,8 +68,6 @@ export const GET = async (request: any) => {
     .skip(page)
     .limit(limit)
     .exec()
-
-  console.log(priceOrder)
 
   if (!products) {
     return NextResponse.json(

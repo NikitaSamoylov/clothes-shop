@@ -9,33 +9,41 @@ import makeAnimated from 'react-select/animated';
 import { notifyError } from '@/utils/notify';
 import styles from './Products.module.scss';
 
+const SORTBY = {
+  asc: 'asc',
+  desc: 'desc',
+} as const;
+
 type TSortOptions = {
-  value: number;
+  value: keyof typeof SORTBY,
   label: string;
 };
 
+
 const sortOptions: TSortOptions[] = [
-  { value: 1, label: 'по возрастанию цены' },
-  { value: 0, label: 'по убыванию цены' },
+  { value: SORTBY.asc, label: 'по возрастанию цены' },
+  { value: SORTBY.desc, label: 'по убыванию цены' },
 ];
 
 const Products: React.FC = () => {
   const [products, setProducts] = useState<TProduct[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
-  const [sortPrice, setSortPrice] = useState<number>(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [sortPrice, setSortPrice] = useState<keyof typeof SORTBY>(SORTBY.asc);
+
+  console.log(sortPrice)
 
   const limit = 12;
 
-  const onPriceSort = (value: string) => {
-    setSortPrice(+value);
+  const onPriceSort = (value: keyof typeof SORTBY) => {
+    setSortPrice(value);
 
-    if (+value === 1) {
+    if (value === SORTBY.asc) {
       setProducts(products => products?.sort((x, y) => x.price - y.price)
       );
     };
 
-    if (+value === 0) {
+    if (value === SORTBY.desc) {
       setProducts(products => products?.sort((x, y) => y.price - x.price)
       );
     };
