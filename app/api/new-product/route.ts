@@ -1,6 +1,7 @@
 import Product from "@/models/Product";
 import connect from "@/dbConnect/dbConnect";
 import { NextResponse } from "next/server";
+import { constants } from "crypto";
 
 export const POST = async (request: any) => {
   const {
@@ -49,9 +50,24 @@ export const POST = async (request: any) => {
   }
 };
 
-export const GET = async () => {
+export const GET = async (request: any) => {
+  const page = request.nextUrl.searchParams.get("page");
+  const limit = request.nextUrl.searchParams.get("limit");
+  const order = request.nextUrl.searchParams.get("sort");
+
+  const priceOrder = order === 1 ? '-' : '';
+  console.log(priceOrder);
+
   await connect();
-  const products = await Product.find().limit(12);
+
+  const products = await Product
+    .find()
+    .sort(`${ priceOrder }price`)
+    .skip(page)
+    .limit(limit)
+    .exec()
+
+  console.log(priceOrder)
 
   if (!products) {
     return NextResponse.json(

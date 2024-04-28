@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Product } from '../products-item';
 import { TProduct } from '@/types/product';
 import { getProducts } from '@/utils/request';
@@ -8,7 +8,6 @@ import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import { notifyError } from '@/utils/notify';
 import styles from './Products.module.scss';
-import { BsMenuButton } from 'react-icons/bs';
 
 type TSortOptions = {
   value: number;
@@ -17,21 +16,38 @@ type TSortOptions = {
 
 const sortOptions: TSortOptions[] = [
   { value: 1, label: 'по возрастанию цены' },
-  { value: -1, label: 'по убыванию цены' },
+  { value: 0, label: 'по убыванию цены' },
 ];
 
 const Products: React.FC = () => {
-  const [products, setProducts] = useState<TProduct[]>();
+  const [products, setProducts] = useState<TProduct[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [sortPrice, setSortPrice] = useState<number>(1);
+
+  const limit = 12;
+
+  const onPriceSort = (value: string) => {
+    setSortPrice(+value);
+
+    if (+value === 1) {
+      setProducts(products => products?.sort((x, y) => x.price - y.price)
+      );
+    };
+
+    if (+value === 0) {
+      setProducts(products => products?.sort((x, y) => y.price - x.price)
+      );
+    };
+
+    // setSortPrice(+value);
+  };
 
   const animatedComponents = makeAnimated();
 
-  const itemsPerPage = 12;
-
-  const loadProducts = () => {
-    getProducts(`/api/new-product`)
+  const loadProducts = async () => {
+    const url = `/api/new-product?page=${ products.length }&limit=${ limit }&sort=${ sortPrice }`;
+    await getProducts(url)
       .then(renderElements)
       .catch(catchError)
   };
@@ -39,7 +55,9 @@ const Products: React.FC = () => {
   const renderElements = (data: TProduct[]) => {
     setLoading(false);
     setError(false);
-    setProducts(data);
+    products.length !== 0 ?
+      setProducts(products => [...products, ...data]) :
+      setProducts(data);
   };
 
   const catchError = () => {
@@ -73,13 +91,18 @@ const Products: React.FC = () => {
     <h2>Что-то пошло не так</h2> :
     null;
 
-  const productsItems = !isLoading ||
+  const productsItems = !isLoading &&
     !isError ?
     (
       <>
         <ul className={ styles.products__list }>
           { elements }
         </ul>
+        <button onClick={ () => loadProducts() }
+          className={ styles.products__btn }
+        >
+          Загрузить еще
+        </button>
       </>
     ) :
     null;
@@ -124,7 +147,7 @@ const Products: React.FC = () => {
                 primary: '#c5e8f2',
               },
             }) }
-          // onChange={ (options: any) => setCategory(options) }
+            onChange={ (options: any) => onPriceSort(options.value) }
           />
         </div>
       </div>
