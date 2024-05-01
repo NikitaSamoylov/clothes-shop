@@ -54,10 +54,13 @@ export const GET = async (request: any) => {
   const limit = request.nextUrl.searchParams.get("limit");
   const order = request.nextUrl.searchParams.get("sort");
   const brands = request.nextUrl.searchParams.get("brands");
+  const categories = request.nextUrl.searchParams.get("categories");
 
-  const defaultBrandsList = ['Pull&Bear', 'Bershka', 'Incanto', 'Incity']
+  const defaultBrandsList = ['Pull & Bear', 'Bershka', 'Incanto', 'Incity'];
+  const defaultCategories = ['майки', 'штаны', 'свитеры', 'куртки'];
 
   let brandsList;
+  let categoriesList;
 
   if (brands) {
     brandsList = brands.split(',').length === 1 &&
@@ -65,16 +68,24 @@ export const GET = async (request: any) => {
       brands.length === 0 ?
       defaultBrandsList :
       brands.split(',')
-    console.log(brandsList)
   } else {
     brandsList = defaultBrandsList
   };
 
+  if (categories) {
+    categoriesList = categories.split(',').length === 1 &&
+      categories.split(',').includes('') ||
+      categories.length === 0 ?
+      defaultCategories :
+      categories.split(',')
+  } else {
+    categoriesList = defaultCategories
+  };
 
   await connect();
 
   const products = await Product
-    .find({ brand: { $in: brandsList } })
+    .find({ brand: { $in: brandsList }, category: { $in: categoriesList } })
     .sort(order === 'asc' ? 'price' : '-price')
     .skip(page)
     .limit(limit)
@@ -116,7 +127,6 @@ export const PUT = async (request: any) => {
       { status: 400 }
     );
   };
-
 
   try {
     await Product.findOneAndUpdate({ _id }, {

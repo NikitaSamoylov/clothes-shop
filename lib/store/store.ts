@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from "@reduxjs/toolkit";
 import { mainPageFilters } from "./main-page-filters/main-page-filters";
+import { CategoriesSlice } from "./main-page-filters/categories-filters";
 
 const rootReducer = combineReducers({
   mainPageFilters: mainPageFilters.reducer,
+  categoriesFilters: CategoriesSlice.reducer,
 });
 
 export const store = () => {

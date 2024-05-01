@@ -28,6 +28,7 @@ const sortOptions: TSortOptions[] = [
 
 const Products: React.FC = () => {
   const brandsFiltersStore = useAppSelector(state => state.mainPageFilters);
+  const categoriesFiltersStore = useAppSelector(state => state.categoriesFilters);
 
   const animatedComponents = makeAnimated();
 
@@ -43,8 +44,12 @@ const Products: React.FC = () => {
       brandsFiltersStore.join(',').replaceAll('&', '%26') :
       '';
 
-    const url = `/api/new-product?page=${ skip }&limit=${ limit }&sort=${ sort }&brands=${ brandsQuery }`;
-    console.log(url)
+    const categoriesQuery = categoriesFiltersStore.length !== 0 ?
+      categoriesFiltersStore.join(',') :
+      '';
+
+    const url = `/api/new-product?page=${ skip }&limit=${ limit }&sort=${ sort }&brands=${ brandsQuery }&categories=${ categoriesQuery }`;
+
     getProducts(url)
       .then((data) => {
         skip === 0 ?
@@ -54,59 +59,12 @@ const Products: React.FC = () => {
       .then(() => setError(false))
       .then(() => setLoading(false))
       .catch(catchError)
-
   };
-
-  // const loadProducts = () => {
-  //   const queryString = brandsFiltersStore.length !== 0 ?
-  //     brandsFiltersStore.join(',') :
-  //     '';
-  //   const url = `/api/new-product?page=${ products.length }&limit=${ limit }&sort=${ sortPrice }&brands=${ queryString }`;
-  //   getProducts(url)
-  //     .then(renderElements)
-  //     .catch(catchError)
-  // };
-
-  // const onBrandFilterChange = () => {
-  // const queryString = brandsFiltersStore.length !== 0 ?
-  //   brandsFiltersStore.join(',') :
-  //   '';
-
-  // setUpUrl(0)
-
-  // const url = `/api/new-product?page=0&limit=${ limit }&sort=${ sortPrice }&brands=${ queryString }`;
-  // getProducts(url)
-  //   .then(setProducts)
-  //   .then(() => setError(false))
-  //   .then(() => setLoading(false))
-  //   .catch(catchError)
-  // };
 
   const onPriceSort = (value: keyof typeof SORTBY) => {
     setSortPrice(value);
     setUpUrl(0, value);
-    // getSortedItems(value);
   };
-
-  // const getSortedItems = (value: keyof typeof SORTBY) => {
-  //   const queryString = brandsFiltersStore.length !== 0 ?
-  //     brandsFiltersStore.join(',') :
-  //     '';
-  //   const url = `/api/new-product?page=0&limit=${ limit }&sort=${ value }&brands=${ queryString }`;
-  //   getProducts(url)
-  //     .then(setProducts)
-  //     .then(() => setError(false))
-  //     .then(() => setLoading(false))
-  //     .catch(catchError)
-  // };
-
-  // const renderElements = (data: TProduct[]) => {
-  //   setLoading(false);
-  //   setError(false);
-  //   products.length !== 0 ?
-  //     setProducts(products => [...products, ...data]) :
-  //     setProducts(data);
-  // };
 
   const catchError = () => {
     setLoading(false);
@@ -114,10 +72,9 @@ const Products: React.FC = () => {
   };
 
   useEffect(() => {
-    // onBrandFilterChange();
     setUpUrl(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [brandsFiltersStore]);
+  }, [brandsFiltersStore, categoriesFiltersStore]);
 
   const elements = products ?
     (
@@ -152,7 +109,6 @@ const Products: React.FC = () => {
             products.length >= limit ?
             (
               <button onClick={ () => setUpUrl() }
-                // <button onClick={ () => loadProducts() }
                 className={ styles.products__btn }
               >
                 Загрузить еще

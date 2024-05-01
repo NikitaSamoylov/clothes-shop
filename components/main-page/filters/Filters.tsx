@@ -2,6 +2,7 @@
 import { ImCheckboxChecked } from "react-icons/im";
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { addFilter } from '@/lib/store/main-page-filters/main-page-filters';
+import { addCategory } from "@/lib/store/main-page-filters/categories-filters";
 import styles from './Filters.module.scss';
 
 const brands: string[] = [
@@ -12,7 +13,7 @@ const brands: string[] = [
 ];
 
 const categories: string[] = [
-  'футболки',
+  'майки',
   'штаны',
   'свитеры',
   'куртки'
@@ -21,6 +22,7 @@ const categories: string[] = [
 const Filters: React.FC = () => {
   const dispatch = useAppDispatch();
   const filtersStore = useAppSelector(state => state.mainPageFilters);
+  const categoriesFiltersStore = useAppSelector(state => state.categoriesFilters);
 
   const brandsElements = brands.map(el => {
     return (
@@ -53,11 +55,12 @@ const Filters: React.FC = () => {
     return (
       <li key={ el }
         className={ styles.filters__item }
+        onClick={ () => dispatch(addCategory(el)) }
       >
         {
-          filtersStore.includes(el) ?
+          categoriesFiltersStore.includes(el) ?
             (
-              <div className={ styles.filters__checkbox }>
+              <div className={ styles.filters__checkbox_checked }>
                 <ImCheckboxChecked
                   size={ 15 } color={ '#378da5' }
                 />
