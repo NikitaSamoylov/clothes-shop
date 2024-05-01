@@ -1,8 +1,6 @@
 import Product from "@/models/Product";
 import connect from "@/dbConnect/dbConnect";
 import { NextResponse } from "next/server";
-import { constants } from "crypto";
-import { SortOrder } from "react-data-table-component";
 
 export const POST = async (request: any) => {
   const {
@@ -55,16 +53,29 @@ export const GET = async (request: any) => {
   const page = request.nextUrl.searchParams.get("page");
   const limit = request.nextUrl.searchParams.get("limit");
   const order = request.nextUrl.searchParams.get("sort");
+  const brands = request.nextUrl.searchParams.get("brands");
 
-  console.log(typeof order)
+  const defaultBrandsList = ['Pull&Bear', 'Bershka', 'Incanto', 'Incity']
 
-  const priceOrder = order === 'asc' ? '' : '-';
+  let brandsList;
+
+  if (brands) {
+    brandsList = brands.split(',').length === 1 &&
+      brands.split(',').includes('') ||
+      brands.length === 0 ?
+      defaultBrandsList :
+      brands.split(',')
+    console.log(brandsList)
+  } else {
+    brandsList = defaultBrandsList
+  };
+
 
   await connect();
 
   const products = await Product
-    .find()
-    .sort(`${ priceOrder }price`)
+    .find({ brand: { $in: brandsList } })
+    .sort(order === 'asc' ? 'price' : '-price')
     .skip(page)
     .limit(limit)
     .exec()

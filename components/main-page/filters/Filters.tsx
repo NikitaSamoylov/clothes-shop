@@ -1,3 +1,7 @@
+'use client';
+import { ImCheckboxChecked } from "react-icons/im";
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import { addFilter } from '@/lib/store/main-page-filters/main-page-filters';
 import styles from './Filters.module.scss';
 
 const brands: string[] = [
@@ -14,38 +18,60 @@ const categories: string[] = [
   'куртки'
 ];
 
-const filters = [
-  { value: 'Марка', items: brands },
-  { value: 'Категории', items: categories },
-];
-
 const Filters: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const filtersStore = useAppSelector(state => state.mainPageFilters);
 
-  const elements = filters.map(el => {
+  const brandsElements = brands.map(el => {
     return (
-      <div key={ el.value }>
-        <h3 className={ styles.filters__title }>
-          { el.value }
-        </h3>
-        <ul className={ styles.filters__list }>
-          {
-            el.items.map(el => {
-              return (
-                <li key={ el }
-                  className={ styles.filters__item }
-                >
-                  <div
-                    className={ styles.filters__checkbox }
-                  ></div>
-                  <span className={ styles.filters__name }>
-                    { el }
-                  </span>
-                </li>
-              )
-            })
-          }
-        </ul>
-      </div>
+      <li key={ el }
+        className={ styles.filters__item }
+        onClick={ () => dispatch(addFilter(el)) }
+      >
+        {
+          filtersStore.includes(el) ?
+            (
+              <div className={ styles.filters__checkbox_checked }>
+                <ImCheckboxChecked
+                  size={ 15 } color={ '#378da5' }
+                />
+              </div>
+            ) :
+            (
+              <div className={ styles.filters__checkbox_unchecked }>
+              </div>
+            )
+        }
+        <button className={ styles.filters__name }>
+          { el }
+        </button>
+      </li>
+    )
+  });
+
+  const categoriesElements = categories.map(el => {
+    return (
+      <li key={ el }
+        className={ styles.filters__item }
+      >
+        {
+          filtersStore.includes(el) ?
+            (
+              <div className={ styles.filters__checkbox }>
+                <ImCheckboxChecked
+                  size={ 15 } color={ '#378da5' }
+                />
+              </div>
+            ) :
+            (
+              <div className={ styles.filters__checkbox_unchecked }>
+              </div>
+            )
+        }
+        <button className={ styles.filters__name }>
+          { el }
+        </button>
+      </li>
     )
   });
 
@@ -54,7 +80,18 @@ const Filters: React.FC = () => {
       <h2 className="section-title">
         Фильтры
       </h2>
-      { elements }
+      <h3 className={ styles.filters__title }>
+        Бренд
+      </h3>
+      <ul className={ styles.filters__list }>
+        { brandsElements }
+      </ul>
+      <h3 className={ styles.filters__title }>
+        Категории
+      </h3>
+      <ul className={ styles.filters__list }>
+        { categoriesElements }
+      </ul>
     </div>
   )
 };

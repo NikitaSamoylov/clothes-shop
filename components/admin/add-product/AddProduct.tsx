@@ -52,6 +52,12 @@ const AddProductForm: React.FC = () => {
   const [clearImg, setClearImg] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  console.log(productSize)
+  console.log(category)
+  console.log(brand)
+  console.log(productImgUrl)
+  console.log(productImgUrl)
+
   const {
     register,
     handleSubmit,
@@ -63,7 +69,7 @@ const AddProductForm: React.FC = () => {
 
   const onReset = () => {
     reset();
-    setProductSize([]);
+    // setProductSize([]);
     setProductImgUrl([]);
     setClearImg(true);
   };

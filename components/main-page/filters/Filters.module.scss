@@ -15,20 +15,29 @@
   &__item {
     display: flex;
     align-items: center;
+    cursor: pointer;
   }
 
   &__item:not(:last-child) {
-    margin-bottom: 5px;
+    margin-bottom: 7px;
   }
 
   &__name {
     font-size: 1.6rem;
+    font-family: inherit;
+    cursor: default;
   }
 
-  &__checkbox {
+  &__checkbox_checked {
+    position: relative;
+    top: 2px;
+    margin-right: 7px;
+  }
+
+  &__checkbox_unchecked {
     width: 15px;
     height: 15px;
-    border: 1px solid rgb(173, 171, 171);
+    border: 1px solid grey;
     border-radius: 3px;
     margin-right: 7px;
   }

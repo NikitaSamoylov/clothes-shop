@@ -14,12 +14,7 @@ services:
     image: mongo:latest
     restart: always
     container_name: eshopbd
-    # environment:
-    # MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-    # MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-    # MONGO_INITDB_ROOT_DATABASE: ${MONGO_INITDB_ROOT_DATABASE}
     ports:
       - "27017:27017"
     volumes:
-      # - ./initdb:/docker-entrypoint-initdb.d:ro
       - ./data/db:/data/db

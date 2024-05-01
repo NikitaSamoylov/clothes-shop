@@ -56,6 +56,7 @@ const Product: React.FC<TProductProps> = (
           </button>
         </div>
       </div>
+      <p>{ data.brand }</p>
       <h4 className={ styles.productsItem__title }>
         { data.title }
       </h4>

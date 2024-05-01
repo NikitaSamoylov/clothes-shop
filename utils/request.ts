@@ -11,7 +11,10 @@ const getResponse = async (
     body: body ? JSON.stringify(body) : null
   });
 
-  if (response.status !== 200 && response.status !== 400) {
+  if (
+    response.status !== 200 &&
+    response.status !== 400
+  ) {
     throw new Error('что-то пошло не так')
   };
 

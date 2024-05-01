@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from "@reduxjs/toolkit";
-import { productFormSlice } from "./add-product-slice/upload-reducer";
+import { mainPageFilters } from "./main-page-filters/main-page-filters";
 
 const rootReducer = combineReducers({
-  addProductForm: productFormSlice.reducer,
+  mainPageFilters: mainPageFilters.reducer,
 });
 
 export const store = () => {
