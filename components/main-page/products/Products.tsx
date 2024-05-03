@@ -1,9 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Product } from '../products-item';
 import { useAppSelector } from '@/lib/hooks';
+import { IoIosArrowDown } from "react-icons/io";
+import { Product } from '../products-item';
 import { TProduct } from '@/types/product';
 import { getProducts } from '@/utils/request';
+import { FiltersList } from '../filters-list';
 import ProductLoader from '@/components/preloaders/ProductLoader';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
@@ -38,8 +40,11 @@ const Products: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [sortPrice, setSortPrice] = useState<keyof typeof SORTBY>(SORTBY.asc);
+  const [isFilters, setIsFilters] = useState(false);
 
   const setUpUrl = (skip = products.length, sort = sortPrice) => {
+    setLoading(true);
+
     const brandsQuery = brandsFiltersStore.length !== 0 ?
       brandsFiltersStore.join(',').replaceAll('&', '%26') :
       '';
@@ -62,6 +67,7 @@ const Products: React.FC = () => {
   };
 
   const onPriceSort = (value: keyof typeof SORTBY) => {
+    setIsFilters(false);
     setSortPrice(value);
     setUpUrl(0, value);
   };
@@ -129,6 +135,26 @@ const Products: React.FC = () => {
           Коллекции
         </h2>
         <div className={ styles.products__sort }>
+          <div style={ { position: 'relative' } }>
+            <div className={ styles.products__filters_mobile }
+              onClick={ () => setIsFilters(isFilters => !isFilters) }
+            >
+              <span className={ styles.products__filters_title }>
+                Фильтры
+              </span>
+              <IoIosArrowDown
+                size={ 20 }
+                color='lightgrey'
+              />
+            </div>
+            {
+              isFilters && (
+                <div className={ styles.products__filters_list }>
+                  <FiltersList />
+                </div>
+              )
+            }
+          </div>
           <Select options={ sortOptions }
             components={ animatedComponents }
             closeMenuOnSelect={ true }

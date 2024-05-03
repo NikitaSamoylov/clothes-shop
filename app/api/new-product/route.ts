@@ -57,7 +57,7 @@ export const GET = async (request: any) => {
   const categories = request.nextUrl.searchParams.get("categories");
 
   const defaultBrandsList = ['Pull & Bear', 'Bershka', 'Incanto', 'Incity'];
-  const defaultCategories = ['майки', 'штаны', 'свитеры', 'куртки'];
+  const defaultCategories = ['майки', 'штаны', 'толстовки', 'куртки'];
 
   let brandsList;
   let categoriesList;

@@ -1,0 +1,46 @@
+.filters {
+
+  &__title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  &__list {
+    margin-bottom: 20px;
+  }
+
+  &__list_categories {
+    margin-bottom: 0;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  &__item:not(:last-child) {
+    margin-bottom: 7px;
+  }
+
+  &__name {
+    font-size: 1.6rem;
+    font-family: inherit;
+    cursor: default;
+  }
+
+  &__checkbox_checked {
+    position: relative;
+    top: 2px;
+    margin-right: 7px;
+  }
+
+  &__checkbox_unchecked {
+    width: 15px;
+    height: 15px;
+    border: 1px solid grey;
+    border-radius: 3px;
+    margin-right: 7px;
+  }
+}

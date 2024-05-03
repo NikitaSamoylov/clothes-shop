@@ -1,4 +1,5 @@
 @import '../../../styles/vars';
+@import '../../../styles/mixins';
 
 .products {
 
@@ -8,6 +9,10 @@
     justify-content: space-between;
     margin-bottom: 30px;
     width: 100%;
+
+    @include mobile-landscape {
+      flex-direction: column;
+    }
   }
 
   &__list {
@@ -16,6 +21,19 @@
     column-gap: 20px;
     row-gap: 25px;
     margin-bottom: 35px;
+    justify-items: center;
+
+    @include big-laptop {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @include tablet-landscape {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include tablet {
+      grid-template-columns: repeat(1, 1fr);
+    }
   }
 
   &__btn {
@@ -36,5 +54,53 @@
     color: #fff;
     border-color: $form-btn-color;
     background-color: $form-btn-color;
+  }
+
+  &__sort {
+    display: flex;
+    align-items: center;
+
+    @include mobile-landscape {
+      margin-top: 15px;
+    }
+  }
+
+  &__filters_mobile {
+    display: none;
+    align-items: center;
+    margin-right: 35px;
+    cursor: pointer;
+
+    @include laptop {
+      display: flex;
+    }
+
+    @include mobile-landscape {
+      margin-right: 27px;
+    }
+  }
+
+  &__filters_title {
+    font-size: 1.4rem;
+    margin-right: 7px;
+  }
+
+  &__filters_list {
+    position: absolute;
+    padding: 20px 25px;
+    z-index: 5;
+    background-color: #fff;
+    border-radius: 10px;
+    top: 35px;
+    left: -35px;
+    -webkit-box-shadow: 0px 0px 8px 0px rgba(34, 60, 80, 0.2);
+    -moz-box-shadow: 0px 0px 8px 0px rgba(34, 60, 80, 0.2);
+    box-shadow: 0px 0px 8px 0px rgba(34, 60, 80, 0.2);
+
+    @include mobile-landscape {
+      left: 0;
+      padding: 10px 10px;
+      width: 125px;
+    }
   }
 }

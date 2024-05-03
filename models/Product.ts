@@ -30,7 +30,7 @@ const productSchema = new Schema(
       type: String
     },
     category: {
-      type: [String],
+      type: String,
       required: [true, "выберите категорию"],
       trim: true,
     },

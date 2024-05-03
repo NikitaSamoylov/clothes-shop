@@ -1,7 +1,25 @@
 @import './vars';
 
+@mixin big-laptop {
+  @media (max-width: $big-laptop) {
+    @content;
+  }
+}
+
 @mixin laptop {
   @media (max-width: $laptop) {
+    @content;
+  }
+}
+
+@mixin tablet-landscape {
+  @media (max-width: $tablet-landscape) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: $tablet) {
     @content;
   }
 }

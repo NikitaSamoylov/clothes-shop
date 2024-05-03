@@ -17,7 +17,7 @@ const Product: React.FC<TProductProps> = (
 ) => {
 
   return (
-    <li>
+    <li className={ styles.productsItem }>
       <div className={ styles.productsItem__img_wrapper }>
         <Link href="/">
           <NextImage
@@ -56,7 +56,9 @@ const Product: React.FC<TProductProps> = (
           </button>
         </div>
       </div>
-      <p>{ data.brand }</p>
+      <p className={ styles.productsItem__brand }>
+        { data.brand }
+      </p>
       <h4 className={ styles.productsItem__title }>
         { data.title }
       </h4>
