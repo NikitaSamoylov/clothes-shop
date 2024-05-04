@@ -9,7 +9,6 @@ type TProductCardProps = {
 const ProductCard: React.FC<TProductCardProps> = (
   { product }
 ) => {
-  console.log(product)
 
   return (
     <li>
@@ -20,9 +19,6 @@ const ProductCard: React.FC<TProductCardProps> = (
               src={ product.images[0] }
               width={ 110 }
               height={ 120 }
-              // width="0"
-              // height="0"
-              // style={ { width: '80px', height: 'auto' } }
               alt='фото товара'
             />
           ) :

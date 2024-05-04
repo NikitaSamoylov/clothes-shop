@@ -19,7 +19,7 @@ const Product: React.FC<TProductProps> = (
   return (
     <li className={ styles.productsItem }>
       <div className={ styles.productsItem__img_wrapper }>
-        <Link href="/">
+        <Link href={ `/${ data._id }` }>
           <NextImage
             src={
               data.images ?

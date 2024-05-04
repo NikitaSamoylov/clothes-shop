@@ -2,9 +2,10 @@
 
 .productsItem {
   width: 289px;
+  transition: .3s;
 
   &:hover {
-    transform: scale(0.5);
+    transform: scale(1.03);
   }
 
   &__img {

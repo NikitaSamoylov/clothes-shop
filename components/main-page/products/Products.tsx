@@ -9,7 +9,6 @@ import { FiltersList } from '../filters-list';
 import ProductLoader from '@/components/preloaders/ProductLoader';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
-import { notifyError } from '@/utils/notify';
 import styles from './Products.module.scss';
 
 const SORTBY = {
@@ -24,7 +23,7 @@ type TSortOptions = {
 
 
 const sortOptions: TSortOptions[] = [
-  { value: SORTBY.asc, label: 'по возрастанию цены' },
+  { value: SORTBY.asc, label: 'по нарастанию цены' },
   { value: SORTBY.desc, label: 'по убыванию цены' },
 ];
 
@@ -43,7 +42,9 @@ const Products: React.FC = () => {
   const [isFilters, setIsFilters] = useState(false);
 
   const setUpUrl = (skip = products.length, sort = sortPrice) => {
-    setLoading(true);
+    skip === 0 ?
+      setLoading(true) :
+      skip
 
     const brandsQuery = brandsFiltersStore.length !== 0 ?
       brandsFiltersStore.join(',').replaceAll('&', '%26') :
@@ -188,6 +189,7 @@ const Products: React.FC = () => {
               },
             }) }
             onChange={ (options: any) => onPriceSort(options.value) }
+            isDisabled={ isFilters ? true : false }
           />
         </div>
       </div>

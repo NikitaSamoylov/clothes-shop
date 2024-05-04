@@ -1,0 +1,108 @@
+@import '../../styles/vars';
+
+.product {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  margin-bottom: 30px;
+
+  &__bg {
+    padding: 25px 25px;
+    border-radius: 10px;
+    background-color: $product-card-bg;
+    width: 400px;
+    height: auto;
+  }
+
+  &__image {
+    display: inline-block;
+  }
+
+  &__content {
+    margin-left: 25px;
+  }
+
+  &__title {
+    font-size: 2.2rem;
+    font-weight: 400;
+    margin-bottom: 5px;
+  }
+
+  &__price {
+    font-size: 2rem;
+    color: rgb(205, 39, 39);
+    font-weight: 700;
+    margin-bottom: 25px;
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+  }
+
+  &__info_item {
+    font-size: 1.6rem;
+    color: grey;
+    margin-right: 15px;
+    margin-bottom: 5px;
+  }
+
+  &__info_name {
+    color: #20a2bd;
+    margin-left: 7px;
+  }
+
+  &__stock {
+    margin-bottom: 25px;
+  }
+
+  &__inStock_true,
+  &__inStock_false {
+    font-size: 1.6rem;
+    color: #20a2bd;
+  }
+
+  &__inStock_false {
+    color: rgb(194, 57, 57);
+  }
+
+  &__description {
+    font-size: 1.6rem;
+    color: grey;
+    max-width: 730px;
+    margin: 0 auto 25px auto;
+  }
+
+  &__sizes {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+  }
+
+  &__sizes_item {
+    font-family: inherit;
+    font-size: 1.4rem;
+    color: grey;
+    margin-right: 15px;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    width: 35px;
+    height: 35px;
+    transition: .3s;
+  }
+
+  &__sizes_item:hover {
+    background-color: $form-btn-color;
+    color: #fff;
+    border-color: $form-btn-color;
+  }
+
+  &__buttons {
+    display: flex;
+    align-items: center;
+  }
+
+  &__buttons_item {
+    margin-right: 15px;
+  }
+}
