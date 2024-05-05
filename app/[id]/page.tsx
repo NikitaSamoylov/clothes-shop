@@ -1,9 +1,16 @@
 'use client';
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import NextImage from 'next/image';
-import { TProductForUpload } from "@/types/product";
+import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch } from "@/lib/hooks";
+import { postCart } from "@/lib/store/cart/cart-slice";
+import { putCart } from "@/lib/store/cart/cart-slice";
+import { TProduct, TProductForUpload } from "@/types/product";
+import { TUserCart } from "@/types/product";
 import { formatPrice } from "@/utils/intl";
 import { Button } from "@/components/button";
+import { notifyError, notifyInfo } from "@/utils/notify";
 import ProductLoader from "@/components/preloaders/ProductLoader";
 import styles from './page.module.scss';
 
@@ -18,9 +25,17 @@ type TLoadProductProps = {
 const LoadProduct: React.FC<TLoadProductProps> = (
   { params: { id } }
 ) => {
+
+  const { data: session } = useSession();
+
+  const cartStore = useAppSelector(state => state.cartList.list);
+
+  const dispatch = useAppDispatch();
+
   const [product, setProduct] = useState<TProductForUpload>();
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
+  const [size, setSize] = useState<string[]>([]);
 
   useEffect(() => {
     fetch(`/api/get-single-product?id=${ id }`)
@@ -30,6 +45,25 @@ const LoadProduct: React.FC<TLoadProductProps> = (
       .catch(setIsError)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const addToCart = async () => {
+    const userId = session?.user?.id;
+    if (product && userId) {
+      const productForSend = {
+        userId,
+        goods: [{
+          ...product,
+          sizes: size,
+        }],
+      };
+
+      if (cartStore.length === 0) {
+        await dispatch(postCart(productForSend));
+      } else {
+        await dispatch(putCart(productForSend));
+      };
+    };
+  };
 
   return (
     <div className="container">
@@ -99,6 +133,7 @@ const LoadProduct: React.FC<TLoadProductProps> = (
                           >
                             <button
                               className={ styles.product__sizes_btn }
+                              onClick={ () => setSize([el]) }
                             >
                               { el }
                             </button>
@@ -110,7 +145,9 @@ const LoadProduct: React.FC<TLoadProductProps> = (
                   {
                     product.inStock && (
                       <div className={ styles.product__buttons }>
-                        <div className={ styles.product__buttons_item }>
+                        <div className={ styles.product__buttons_item }
+                          onClick={ addToCart }
+                        >
                           <Button title={ 'в корзину' } />
                         </div>
                         <div>

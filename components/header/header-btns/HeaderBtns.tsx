@@ -1,8 +1,9 @@
 'use client';
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
 import { signOut } from "next-auth/react";
+import { useState } from "react";
+import { useAppSelector } from "@/lib/hooks";
 import { AiOutlineHeart } from "react-icons/ai";
 import { BsBagCheck } from "react-icons/bs";
 import { FiUserCheck } from "react-icons/fi";
@@ -13,6 +14,10 @@ import styles from './HeaderBtns.module.scss';
 const HeaderBtns: React.FC = () => {
   const { data: session, status } = useSession();
 
+  const cartStore = useAppSelector(state => state.cartList.list);
+
+  console.log(cartStore)
+
   const [menuState, setMenuState] = useState<boolean>(false);
 
   const closeMenuPop = () => {
@@ -21,11 +26,6 @@ const HeaderBtns: React.FC = () => {
 
   return (
     <div className={ styles.btn__list }>
-      <button className={ styles.btn__item }>
-        <AiOutlineHeart size={ 20 }
-          color="grey"
-        />
-      </button>
       {
         status !== 'authenticated' ?
           (
@@ -47,12 +47,22 @@ const HeaderBtns: React.FC = () => {
             </button>
           )
       }
+      <button className={ styles.btn__item }>
+        <AiOutlineHeart size={ 20 }
+          color="grey"
+        />
+      </button>
       <button className={ styles.btn__item }
         onClick={ () => signOut() }
       >
         <BsBagCheck size={ 18 }
           color="grey"
         />
+        <div className={ styles.btn__icon }>
+          <span className={ styles.btn__icon_text }>
+            { cartStore.length }
+          </span>
+        </div>
       </button>
       {
         menuState &&

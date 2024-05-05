@@ -18,5 +18,10 @@ export type TProduct = {
 export type TProductForUpload = TProduct & {
   createdAt: string;
   updatedAt: string;
-  _v: number;
+  __v: number;
+};
+
+export type TUserCart = {
+  userId: string | undefined;
+  goods: TProductForUpload[] | undefined;
 };

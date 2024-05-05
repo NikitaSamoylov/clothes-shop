@@ -6,13 +6,30 @@
     position: relative;
     display: flex;
     align-items: center;
-
-    // @include mobile-landscape {
-    //   display: none;
-    // }
   }
 
   &__item {
+    position: relative;
     margin-left: 20px;
+  }
+
+  &__icon {
+    position: absolute;
+    top: -8px;
+    left: 10px;
+    width: 18px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: rgb(53, 145, 171);
+  }
+
+  &__icon_text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    color: #fff;
+    font-size: 1rem;
   }
 }

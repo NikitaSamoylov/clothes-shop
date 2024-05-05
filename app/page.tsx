@@ -3,6 +3,7 @@ import { Products } from "@/components/main-page/products";
 import styles from './page.module.scss';
 
 export default function Home() {
+
   return (
     <section className="container">
       <div className={ styles.main }>
