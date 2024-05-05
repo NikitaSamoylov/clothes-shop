@@ -22,8 +22,6 @@ const LoadProduct: React.FC<TLoadProductProps> = (
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
-  console.log(product)
-
   useEffect(() => {
     fetch(`/api/get-single-product?id=${ id }`)
       .then((data) => data.json())
@@ -43,9 +41,10 @@ const LoadProduct: React.FC<TLoadProductProps> = (
                 <div className={ styles.product__bg }>
                   <NextImage
                     src={ product.images ? product.images[0].link : defaultImage }
-                    width={ 350 }
-                    height={ 410 }
+                    width={ 310 }
+                    height={ 370 }
                     alt="Товар"
+                    priority
                     className={ styles.product__image }
                   />
                 </div>
@@ -56,20 +55,26 @@ const LoadProduct: React.FC<TLoadProductProps> = (
                   <p className={ styles.product__price }>
                     { formatPrice('ru').format(product.price) }
                   </p>
-                  <div className={ styles.product__info }>
-                    <span className={ styles.product__info_item }>
-                      Категория:
-                      <span className={ styles.product__info_name }>
-                        { product.category }
+                  <ul className={ styles.product__info }>
+                    <li className={ styles.product__info_item }>
+                      <span className={ styles.product__info_item_item }
+
+                      >
+                        Категория:
+                        <span className={ styles.product__info_name } >
+                          { product.category }
+                        </span>
                       </span>
-                    </span>
-                    <span className={ styles.product__info_item }>
-                      Бренд:
-                      <span className={ styles.product__info_name }>
-                        { product.brand }
+                    </li>
+                    <li className={ styles.product__info_item }>
+                      <span className={ styles.product__info_item_item }>
+                        Бренд:
+                        <span className={ styles.product__info_name }>
+                          { product.brand }
+                        </span>
                       </span>
-                    </span>
-                  </div>
+                    </li>
+                  </ul>
                   <div className={ styles.product__stock }>
                     {
                       product.inStock ?
@@ -85,19 +90,23 @@ const LoadProduct: React.FC<TLoadProductProps> = (
                         )
                     }
                   </div>
-                  <div className={ styles.product__sizes }>
+                  <ul className={ styles.product__sizes }>
                     {
                       product.sizes.map(el => {
                         return (
-                          <button key={ el }
+                          <li key={ el }
                             className={ styles.product__sizes_item }
                           >
-                            { el }
-                          </button>
+                            <button
+                              className={ styles.product__sizes_btn }
+                            >
+                              { el }
+                            </button>
+                          </li>
                         )
                       })
                     }
-                  </div>
+                  </ul>
                   {
                     product.inStock && (
                       <div className={ styles.product__buttons }>

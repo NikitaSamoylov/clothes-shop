@@ -4,6 +4,7 @@ const override = {
   display: "block",
   margin: "auto auto",
   borderWidth: '7px',
+  paddingTop: '35px',
 };
 
 const ProductLoader = () => (
