@@ -4,13 +4,11 @@ import { useSession } from "next-auth/react";
 import NextImage from 'next/image';
 import { useAppSelector } from "@/lib/hooks";
 import { useAppDispatch } from "@/lib/hooks";
-import { postCart } from "@/lib/store/cart/cart-slice";
-import { putCart } from "@/lib/store/cart/cart-slice";
-import { TProduct, TProductForUpload } from "@/types/product";
-import { TUserCart } from "@/types/product";
+import { addProduct } from "@/lib/store/cart/cart-slice";
+import { TProductForUpload, TUserCart } from "@/types/product";
 import { formatPrice } from "@/utils/intl";
 import { Button } from "@/components/button";
-import { notifyError, notifyInfo } from "@/utils/notify";
+import { notifyInfo } from "@/utils/notify";
 import ProductLoader from "@/components/preloaders/ProductLoader";
 import styles from './page.module.scss';
 
@@ -28,7 +26,7 @@ const LoadProduct: React.FC<TLoadProductProps> = (
 
   const { data: session } = useSession();
 
-  const cartStore = useAppSelector(state => state.cartList.list);
+  const cartStore = useAppSelector(state => state.cartList);
 
   const dispatch = useAppDispatch();
 
@@ -36,18 +34,52 @@ const LoadProduct: React.FC<TLoadProductProps> = (
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [size, setSize] = useState<string[]>([]);
+  const [inCart, setInCart] = useState(false);
 
   useEffect(() => {
     fetch(`/api/get-single-product?id=${ id }`)
       .then((data) => data.json())
       .then(data => setProduct(data.product))
       .then(() => setIsLoading(false))
-      .catch(setIsError)
+      .catch(setIsError);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const addToCart = async () => {
+  useEffect(() => {
+    setInCart(
+      cartStore.filter(el => el._id === product?._id)
+        .length !== 0 ? true : false
+    )
+  }, [cartStore, product?._id])
+
+  const addToCart = (method: 'POST' | 'PUT', productForSend: TUserCart) => {
+    if (product) {
+      fetch('/api/cart', {
+        method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(productForSend)
+      })
+        .then(() => dispatch(addProduct({
+          ...product,
+          sizes: size,
+        })))
+        .then(() => notifyInfo('Товар добавлен в корзину'))
+        .catch(() => notifyInfo('Ошибка добавления товара'))
+    } else {
+      notifyInfo('Что-то пошло не так')
+    }
+  }
+
+  const prepareCart = async () => {
+    if (size.length === 0) {
+      notifyInfo('Выберите размер');
+      return;
+    };
+
     const userId = session?.user?.id;
+
     if (product && userId) {
       const productForSend = {
         userId,
@@ -58,11 +90,13 @@ const LoadProduct: React.FC<TLoadProductProps> = (
       };
 
       if (cartStore.length === 0) {
-        await dispatch(postCart(productForSend));
+        addToCart('POST', productForSend)
       } else {
-        await dispatch(putCart(productForSend));
-      };
-    };
+        addToCart('PUT', productForSend)
+      }
+    } else {
+      notifyInfo('Войдите в аккаунт, чтобы сохранять товары')
+    }
   };
 
   return (
@@ -145,19 +179,31 @@ const LoadProduct: React.FC<TLoadProductProps> = (
                   {
                     product.inStock && (
                       <div className={ styles.product__buttons }>
-                        <div className={ styles.product__buttons_item }
-                          onClick={ addToCart }
-                        >
-                          <Button title={ 'в корзину' } />
-                        </div>
-                        <div>
-                          <Button title={ 'в избранное' } />
-                        </div>
+                        {
+                          inCart ?
+                            (
+                              <div className={ styles.product__buttons_item }
+                              >
+                                <Button title={ 'в корзине' } />
+                              </div>
+                            ) :
+                            (
+                              <>
+                                <div className={ styles.product__buttons_item }
+                                  onClick={ prepareCart }
+                                >
+                                  <Button title={ 'в корзину' } />
+                                </div>
+                                <div>
+                                  <Button title={ 'в избранное' } />
+                                </div>
+                              </>
+                            )
+                        }
                       </div>
                     )
                   }
                 </div>
-                <div />
               </div>
               <p className={ styles.product__description }>
                 { product.description }

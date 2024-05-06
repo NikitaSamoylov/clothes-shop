@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useAppDispatch } from "@/lib/hooks";
-import { fetchCart } from "@/lib/store/cart/cart-slice";
+import { addProduct } from '@/lib/store/cart/cart-slice';
+// import { fetchCart } from "@/lib/store/cart/cart-slice";
 import { Toaster } from 'react-hot-toast';
 import { MdOutlineMenu } from "react-icons/md";
 import Logo from './logo.png';
@@ -18,16 +19,23 @@ const Header: React.FC = () => {
 
   const dispatch = useAppDispatch();
 
-  const [userIsAuthorized, setUserIsAuthorized] = useState<string | null>(null);
+  // const [userIsAuthorized, setUserIsAuthorized] = useState<string | null>(null);
   const [mobileMenu, setMobileMenu] = useState<boolean>(false);
 
   useEffect(() => {
-    setUserIsAuthorized(session?.user ? session.user.id : null)
-    userIsAuthorized ?
-      dispatch(fetchCart(userIsAuthorized)) :
-      userIsAuthorized
+    fetch(`/api/cart?user=${ session?.user?.id }`)
+      .then(data => data.json())
+      .then(data => data.cart.length !== 0 && dispatch(addProduct(data.cart)))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
+  }, []);
+
+  // useEffect(() => {
+  //   setUserIsAuthorized(session?.user ? session.user.id : null)
+  //   userIsAuthorized ?
+  //     dispatch(fetchCart(userIsAuthorized)) :
+  //     userIsAuthorized
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [session]);
 
   return (
     <div className='container'>
@@ -65,11 +73,13 @@ const Header: React.FC = () => {
         reverseOrder={ false }
         gutter={ 8 }
         toastOptions={ {
-          duration: 3000,
+          duration: 2000,
           style: {
             background: '#5b9fb3',
             color: '#fff',
             fontSize: '16px',
+            textAlign: 'center',
+            maxWidth: '250px',
           },
         } }
       />

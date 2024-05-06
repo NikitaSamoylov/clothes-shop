@@ -4,6 +4,7 @@ export type TProductImages = {
 };
 
 export type TProduct = {
+  userId?: string;
   _id?: string;
   title: string;
   description: string;
@@ -18,10 +19,10 @@ export type TProduct = {
 export type TProductForUpload = TProduct & {
   createdAt: string;
   updatedAt: string;
-  __v: number;
+  _v: number;
 };
 
 export type TUserCart = {
   userId: string | undefined;
-  goods: TProductForUpload[] | undefined;
+  goods: TProduct[];
 };

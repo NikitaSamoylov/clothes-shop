@@ -24,8 +24,8 @@ export const POST = async (request: any) => {
   } catch (err: any) {
     return NextResponse.json({ message: err.message },
       { status: 500, }
-    );
-  };
+    )
+  }
 };
 
 export const GET = async (request: any) => {
@@ -64,6 +64,13 @@ export const PUT = async (request: any) => {
   if (!existingCart) {
     return NextResponse.json(
       { msg: "ошибка поиска корзины" },
+      { status: 400 }
+    );
+  };
+
+  if (existingCart.goods.includes(goods)) {
+    return NextResponse.json(
+      { msg: "товар уже добавлен" },
       { status: 400 }
     );
   };

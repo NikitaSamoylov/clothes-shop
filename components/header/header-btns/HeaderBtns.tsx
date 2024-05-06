@@ -14,9 +14,10 @@ import styles from './HeaderBtns.module.scss';
 const HeaderBtns: React.FC = () => {
   const { data: session, status } = useSession();
 
-  const cartStore = useAppSelector(state => state.cartList.list);
+  // const cartStore = useAppSelector(state => state.cartList.list);
+  const cartStore = useAppSelector(state => state.cartList);
 
-  console.log(cartStore)
+  // console.log(cartStore)
 
   const [menuState, setMenuState] = useState<boolean>(false);
 

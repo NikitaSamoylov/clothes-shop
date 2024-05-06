@@ -23,22 +23,6 @@ const cartSchema = new Schema(
       }
     ]
   },
-  // {
-  //   userId: String,
-  //   title: String,
-  //   description: String,
-  //   price: Number,
-  //   sizes: [String],
-  //   brand: String,
-  //   category: String,
-  //   images: [
-  //     {
-  //       link: String,
-  //       name: String
-  //     }
-  //   ],
-  //   inStock: Boolean,
-  // },
   { timestamps: true }
 );
 
