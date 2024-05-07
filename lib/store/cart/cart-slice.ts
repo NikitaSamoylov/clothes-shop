@@ -1,71 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { TUserCart, TProduct } from "@/types/product";
-import { TProductForUpload } from "@/types/product";
+import { TProduct } from "@/types/product";
 import { PayloadAction } from "@reduxjs/toolkit";
-
-// interface ICartState {
-//   list: TProduct[];
-//   loading: boolean;
-//   error: string | null;
-// };
-
-// const initialState: ICartState = {
-//   list: [],
-//   loading: false,
-//   error: null,
-// };
-
-// export const fetchCart = createAsyncThunk<TProduct[], string, { rejectValue: string }>(
-//   'cart/fetchCart',
-//   async function (id, { rejectWithValue }) {
-//     const response = await fetch(`/api/cart?user=${ id }`);
-
-//     if (!response.ok) {
-//       rejectWithValue('Что-то пошло не так')
-//     };
-
-//     const data = await response.json();
-//     return data.cart[0].goods;
-//   }
-// );
-
-// export const postCart = createAsyncThunk<TProduct, TUserCart, { rejectValue: string }>(
-//   'cart/postCart',
-//   async function (product, { rejectWithValue }) {
-//     const response = await fetch(`/api/cart`, {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json'
-//       },
-//       body: JSON.stringify(product)
-//     })
-
-//     if (!response.ok) {
-//       rejectWithValue('Что-то пошло не так')
-//     };
-
-//     return await response.json();
-//   }
-// );
-
-// export const putCart = createAsyncThunk<TProduct, TUserCart, { rejectValue: string }>(
-//   'cart/putCart',
-//   async function (product, { rejectWithValue }) {
-//     const response = await fetch(`/api/cart`, {
-//       method: 'PUT',
-//       headers: {
-//         'Content-Type': 'application/json'
-//       },
-//       body: JSON.stringify(product)
-//     })
-
-//     if (!response.ok) {
-//       rejectWithValue('Что-то пошло не так')
-//     };
-
-//     return await response.json();
-//   }
-// );
 
 type TInitState = TProduct[];
 
@@ -78,25 +13,20 @@ export const CartSlice = createSlice({
     addProduct: (state, action: PayloadAction<TProduct>) => {
       state.push(action.payload);
     },
+    updateCount: (state, action: PayloadAction<TProduct>) => {
+      return state.map(el => (
+        el._id === action.payload._id ?
+          { ...el, count: action.payload.count } :
+          el
+      ))
+    },
+    deleteItem: (state, action: PayloadAction<TProduct>) => {
+      return state.filter(el => el._id !== action.payload._id)
+    },
+    deleteAllItems: () => {
+      return [];
+    },
   },
-  // extraReducers: (builder) => {
-  //   builder
-  //     .addCase(fetchCart.pending, (state) => {
-  //       state.loading = true;
-  //       state.error = null;
-  //     })
-  //     .addCase(fetchCart.fulfilled, (state, action) => {
-  //       state.list = action.payload;
-
-  //       state.loading = false;
-  //     })
-  //     .addCase(postCart.fulfilled, (state, action) => {
-  //       state.list.push(action.payload);
-  //     })
-  //     .addCase(putCart.fulfilled, (state, action) => {
-  //       state.list.push(action.payload);
-  //     })
-  // }
 });
 
-export const { addProduct } = CartSlice.actions;
+export const { addProduct, updateCount, deleteItem, deleteAllItems } = CartSlice.actions;

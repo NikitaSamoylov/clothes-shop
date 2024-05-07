@@ -12,6 +12,7 @@ const cartSchema = new Schema(
         price: Number,
         sizes: [String],
         brand: String,
+        count: Number,
         category: String,
         images: [
           {

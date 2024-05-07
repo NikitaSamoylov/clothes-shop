@@ -1,8 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { useAppDispatch } from '@/lib/hooks';
 import { useAppSelector } from '@/lib/hooks';
 import { IoIosArrowDown } from "react-icons/io";
 import { Product } from '../products-item';
+import { addProduct } from '@/lib/store/cart/cart-slice';
 import { TProduct } from '@/types/product';
 import { getProducts } from '@/utils/request';
 import { FiltersList } from '../filters-list';
@@ -30,6 +33,10 @@ const sortOptions: TSortOptions[] = [
 const Products: React.FC = () => {
   const brandsFiltersStore = useAppSelector(state => state.mainPageFilters);
   const categoriesFiltersStore = useAppSelector(state => state.categoriesFilters);
+
+  const { data: session } = useSession();
+
+  const dispatch = useAppDispatch();
 
   const animatedComponents = makeAnimated();
 

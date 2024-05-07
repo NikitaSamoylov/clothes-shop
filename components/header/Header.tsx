@@ -5,37 +5,35 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useAppDispatch } from "@/lib/hooks";
 import { addProduct } from '@/lib/store/cart/cart-slice';
-// import { fetchCart } from "@/lib/store/cart/cart-slice";
 import { Toaster } from 'react-hot-toast';
 import { MdOutlineMenu } from "react-icons/md";
 import Logo from './logo.png';
+import { TProduct } from '@/types/product';
 import { HeaderBtns } from './header-btns';
 import { Nav } from '../nav';
 import { MobileNav } from '../nav-mobile';
 import styles from './Header.module.scss';
 
 const Header: React.FC = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const dispatch = useAppDispatch();
 
-  // const [userIsAuthorized, setUserIsAuthorized] = useState<string | null>(null);
   const [mobileMenu, setMobileMenu] = useState<boolean>(false);
 
   useEffect(() => {
-    fetch(`/api/cart?user=${ session?.user?.id }`)
-      .then(data => data.json())
-      .then(data => data.cart.length !== 0 && dispatch(addProduct(data.cart)))
+    if (status === 'authenticated') {
+      fetch(`/api/cart?user=${ session?.user?.id }`)
+        .then(data => data.json())
+        .then(data => (
+          data.cart[0].goods.length !== 0 &&
+          data.cart[0].goods.map((el: TProduct) => (
+            dispatch(addProduct(el))
+          ))
+        ))
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // useEffect(() => {
-  //   setUserIsAuthorized(session?.user ? session.user.id : null)
-  //   userIsAuthorized ?
-  //     dispatch(fetchCart(userIsAuthorized)) :
-  //     userIsAuthorized
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [session]);
+  }, [status]);
 
   return (
     <div className='container'>

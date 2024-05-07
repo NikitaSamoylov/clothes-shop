@@ -6,6 +6,7 @@ export type TProductImages = {
 export type TProduct = {
   userId?: string;
   _id?: string;
+  count?: number;
   title: string;
   description: string;
   price: number;

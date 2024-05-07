@@ -63,6 +63,7 @@ const LoadProduct: React.FC<TLoadProductProps> = (
       })
         .then(() => dispatch(addProduct({
           ...product,
+          count: 1,
           sizes: size,
         })))
         .then(() => notifyInfo('Товар добавлен в корзину'))
@@ -85,6 +86,7 @@ const LoadProduct: React.FC<TLoadProductProps> = (
         userId,
         goods: [{
           ...product,
+          count: 1,
           sizes: size,
         }],
       };
@@ -95,7 +97,7 @@ const LoadProduct: React.FC<TLoadProductProps> = (
         addToCart('PUT', productForSend)
       }
     } else {
-      notifyInfo('Войдите в аккаунт, чтобы сохранять товары')
+      notifyInfo('Войдите в аккаунт для сохранения товаров')
     }
   };
 
