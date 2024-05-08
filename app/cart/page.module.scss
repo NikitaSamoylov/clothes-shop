@@ -1,6 +1,20 @@
 .cart {
 
+  &__content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__list {
+    margin-right: 45px;
+  }
+
   &__empty {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     text-align: center;
     border-radius: 10px;
   }

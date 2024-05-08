@@ -26,10 +26,11 @@ const Header: React.FC = () => {
       fetch(`/api/cart?user=${ session?.user?.id }`)
         .then(data => data.json())
         .then(data => (
-          data.cart[0].goods.length !== 0 &&
-          data.cart[0].goods.map((el: TProduct) => (
-            dispatch(addProduct(el))
-          ))
+          data.cart.length !== 0 ?
+            data.cart[0].goods.map((el: TProduct) => (
+              dispatch(addProduct(el))
+            )) :
+            data
         ))
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

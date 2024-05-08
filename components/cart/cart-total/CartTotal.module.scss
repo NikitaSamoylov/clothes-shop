@@ -1,0 +1,30 @@
+.cart_total {
+
+  &__wrapper {
+    border: 1px solid rgb(226, 225, 225);
+    padding: 15px 25px;
+    border-radius: 10px;
+  }
+
+  &__title {
+    font-size: 2.2rem;
+    text-align: center;
+    margin-bottom: 25px;
+  }
+
+  &__item {
+    font-size: 1.6rem;
+  }
+
+  &__item:not(:last-child) {
+    margin-bottom: 15px;
+  }
+
+  &__item:last-child {
+    border-top: 1px solid rgb(227, 226, 226);
+    padding-top: 20px;
+    margin-bottom: 20px;
+    color: rgb(18, 151, 161);
+    font-weight: 600;
+  }
+}

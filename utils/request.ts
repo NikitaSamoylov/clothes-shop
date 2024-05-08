@@ -1,9 +1,12 @@
 import { TProductForUpload } from "@/types/product";
+import { TOrder } from "@/types/product";
 
-const getResponse = async (
-  data: string, method = 'GET', body = null
+export const getResponse = async (
+  url: string,
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+  body: TOrder | null = null
 ) => {
-  const response = await fetch(data, {
+  const response = await fetch(url, {
     method: method,
     headers: {
       'Content-Type': 'application/json'
@@ -15,18 +18,18 @@ const getResponse = async (
     response.status !== 200 &&
     response.status !== 400
   ) {
-    throw new Error('что-то пошло не так')
+    throw new Error('Что-то пошло не так')
   };
 
   if (response.status === 400) {
-    throw new Error('нет данных для отображения')
+    throw new Error('Нет данных для отображения')
   };
 
   return await response.json();
 };
 
 export const getProducts = async (url: string) => {
-  const uploadedData = await getResponse(url);
+  const uploadedData = await getResponse(url, 'GET');
 
   return uploadedData.products.map((
     el: TProductForUpload

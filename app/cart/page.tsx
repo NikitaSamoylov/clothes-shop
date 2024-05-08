@@ -1,12 +1,11 @@
 'use client';
 import { useSession } from 'next-auth/react';
-import NextImage from 'next/image';
+import { TfiShoppingCartFull } from "react-icons/tfi";
 import { useAppSelector } from '@/lib/hooks';
 import { CartItem } from '@/components/cart/cart-item';
+import { CartTotal } from '@/components/cart/cart-total';
 import styles from './page.module.scss';
 import { redirect } from 'next/navigation';
-
-import emptyCartImg from './empty-cart.jpg';
 
 const Cart: React.FC = () => {
   const { status } = useSession();
@@ -22,34 +21,39 @@ const Cart: React.FC = () => {
       <CartItem key={ el._id }
         item={ el }
       />
-    )
+    );
   });
 
   return (
     <section className='container'>
-      <h2 className='section-title'>
+      <h2 className='section-title'
+        style={ { textAlign: 'center' } }
+      >
         {
           cartStore.length !== 0 ?
             'Корзина' :
             'Корзина пуста'
         }
       </h2>
-      <ul className={ styles.cart__list }>
+      <div className={ styles.cart__content }>
         {
           cartStore.length !== 0 ?
-            cartItems :
+            (
+              <>
+                <ul className={ styles.cart__list }>
+                  { cartItems }
+                </ul>
+                <CartTotal />
+              </>
+            ) :
             <div className={ styles.cart__empty }>
-              <NextImage
-                src={ emptyCartImg }
-                alt="корзина пуста"
-                width={ 600 }
-                height={ 350 }
-                priority
-                className={ styles.cart__empty_img }
+              <TfiShoppingCartFull
+                color="rgb(147 200 211)"
+                size="80"
               />
             </div>
         }
-      </ul>
+      </div>
     </section>
   )
 };

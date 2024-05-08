@@ -5,7 +5,7 @@ export type TProductImages = {
 
 export type TProduct = {
   userId?: string;
-  _id?: string;
+  _id: string;
   count?: number;
   title: string;
   description: string;
@@ -27,3 +27,15 @@ export type TUserCart = {
   userId: string | undefined;
   goods: TProduct[];
 };
+
+type TOrderGoods = {
+  date: number;
+  price: number;
+  goods: TProduct[]
+};
+
+export type TOrder = {
+  userId: string | undefined;
+  orders: TOrderGoods[];
+};
+
