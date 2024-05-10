@@ -1,9 +1,15 @@
+@import '../../../styles/mixins';
+
 .cart_total {
 
   &__wrapper {
     border: 1px solid rgb(226, 225, 225);
     padding: 15px 25px;
     border-radius: 10px;
+
+    @include tablet-landscape {
+      margin-bottom: 35px;
+    }
   }
 
   &__title {
