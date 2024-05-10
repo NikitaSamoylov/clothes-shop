@@ -3,11 +3,13 @@ import { combineReducers } from "@reduxjs/toolkit";
 import { mainPageFilters } from "./main-page-filters/main-page-filters";
 import { CategoriesSlice } from "./main-page-filters/categories-filters";
 import { CartSlice } from "./cart/cart-slice";
+import { OrdersSlice } from "./orders/orders-slice";
 
 const rootReducer = combineReducers({
   mainPageFilters: mainPageFilters.reducer,
   categoriesFilters: CategoriesSlice.reducer,
   cartList: CartSlice.reducer,
+  ordersList: OrdersSlice.reducer,
 });
 
 export const store = () => {

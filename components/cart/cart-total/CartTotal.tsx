@@ -1,30 +1,26 @@
 'use client';
 import React from 'react';
-import { useAppSelector } from '@/lib/hooks';
+import { useEffect, useState } from 'react';
+import { useAppSelector, useAppDispatch } from '@/lib/hooks';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
-import { useEffect } from 'react';
 import { getResponse } from '@/utils/request';
-import { useAppDispatch } from '@/lib/hooks';
 import { Button } from '@/components/button';
 import { formatPrice } from '@/utils/intl';
 import { deleteAllItems } from '@/lib/store/cart/cart-slice';
+import { addOrder } from '@/lib/store/orders/orders-slice';
 import { notifyInfo } from '@/utils/notify';
-import { TProduct } from '@/types/product';
+import { TOrder, TProduct } from '@/types/product';
 import styles from './CartTotal.module.scss';
 
 const CartTotal: React.FC = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const cartStore: TProduct[] = useAppSelector(state => state.cartList);
+  const ordersStore = useAppSelector(state => state.ordersList);
 
   const dispatch = useAppDispatch();
 
   const [productsSum, setProductsSum] = useState(0);
-
-  // const sum = cartStore.reduce((currentSum, item) => {
-  //   return currentSum + (item.price * item.count!)
-  // }, 0);
 
   const sale = cartStore.length >= 3 ?
     15 : 0;
@@ -39,21 +35,36 @@ const CartTotal: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartStore]);
 
-  const placeOrder = async () => {
-    const orderBody = {
+  const prepareOrder = () => {
+    const order: TOrder = {
       userId: session?.user?.id,
       orders: [{
         date: Date.now(),
         price: productsSum - (productsSum * (sale / 100)) + shipping,
         goods: cartStore
-      }]
+      }],
     };
 
-    getResponse('/api/orders', 'POST', orderBody)
+    if (ordersStore.length === 0) {
+      placeOrder('/api/orders', 'POST', order);
+    } else {
+      placeOrder('/api/orders', 'PUT', order);
+    }
+  };
+
+  const placeOrder = async (
+    url: string, method: 'POST' | 'PUT', order: TOrder
+  ) => {
+    getResponse(url, method, order)
       .then(() => notifyInfo('Спасибо за заказ! Уже в работе.'))
       .then(() =>
         getResponse(`/api/cart?user=${ session?.user?.id }`, 'DELETE')
       )
+      .then(() => dispatch(addOrder({
+        date: Date.now(),
+        price: productsSum - (productsSum * (sale / 100)) + shipping,
+        goods: cartStore
+      })))
       .then(() => dispatch(deleteAllItems()))
       .catch(() => notifyInfo('Что-то пошло не так'))
   };
@@ -96,7 +107,7 @@ const CartTotal: React.FC = () => {
         </li>
       </ul>
       <div className={ styles.cart_total__btn }
-        onClick={ placeOrder }
+        onClick={ prepareOrder }
       >
         <Button title={ 'Заказать' } />
       </div>

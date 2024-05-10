@@ -11,7 +11,7 @@ import { AccountMenu } from "../account-popup";
 import styles from './HeaderBtns.module.scss';
 
 const HeaderBtns: React.FC = () => {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
   const cartStore = useAppSelector(state => state.cartList);
 
@@ -54,11 +54,15 @@ const HeaderBtns: React.FC = () => {
           <BsBagCheck size={ 18 }
             color="grey"
           />
-          <div className={ styles.btn__icon }>
-            <span className={ styles.btn__icon_text }>
-              { cartStore.length }
-            </span>
-          </div>
+          {
+            status === 'authenticated' && (
+              <div className={ styles.btn__icon }>
+                <span className={ styles.btn__icon_text }>
+                  { cartStore.length }
+                </span>
+              </div>
+            )
+          }
         </Link>
       </button>
       {

@@ -1,10 +1,10 @@
 import { TProductForUpload } from "@/types/product";
-import { TOrder } from "@/types/product";
+import { TOrder, TUserCart } from "@/types/product";
 
 export const getResponse = async (
   url: string,
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
-  body: TOrder | null = null
+  body: TOrder | TUserCart | null = null
 ) => {
   const response = await fetch(url, {
     method: method,

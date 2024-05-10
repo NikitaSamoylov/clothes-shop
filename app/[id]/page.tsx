@@ -2,12 +2,12 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import NextImage from 'next/image';
-import { useAppSelector } from "@/lib/hooks";
-import { useAppDispatch } from "@/lib/hooks";
+import { useAppSelector, useAppDispatch } from "@/lib/hooks";
 import { addProduct } from "@/lib/store/cart/cart-slice";
 import { TProductForUpload, TUserCart } from "@/types/product";
 import { formatPrice } from "@/utils/intl";
 import { Button } from "@/components/button";
+import { getResponse } from "@/utils/request";
 import { notifyInfo } from "@/utils/notify";
 import ProductLoader from "@/components/preloaders/ProductLoader";
 import styles from './page.module.scss';
@@ -17,7 +17,7 @@ import defaultImage from './default-image.png';
 type TLoadProductProps = {
   params: {
     id: string;
-  }
+  };
 };
 
 const LoadProduct: React.FC<TLoadProductProps> = (
@@ -52,15 +52,11 @@ const LoadProduct: React.FC<TLoadProductProps> = (
     )
   }, [cartStore, product?._id])
 
-  const addToCart = (method: 'POST' | 'PUT', productForSend: TUserCart) => {
+  const addToCart = (
+    method: 'POST' | 'PUT', productForSend: TUserCart
+  ) => {
     if (product) {
-      fetch('/api/cart', {
-        method,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(productForSend)
-      })
+      getResponse('/api/cart', method, productForSend)
         .then(() => dispatch(addProduct({
           ...product,
           count: 1,
@@ -68,10 +64,8 @@ const LoadProduct: React.FC<TLoadProductProps> = (
         })))
         .then(() => notifyInfo('Товар добавлен в корзину'))
         .catch(() => notifyInfo('Ошибка добавления товара'))
-    } else {
-      notifyInfo('Что-то пошло не так')
-    }
-  }
+    };
+  };
 
   const prepareCart = async () => {
     if (size.length === 0) {

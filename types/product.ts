@@ -28,7 +28,7 @@ export type TUserCart = {
   goods: TProduct[];
 };
 
-type TOrderGoods = {
+export type TOrderGoods = {
   date: number;
   price: number;
   goods: TProduct[]

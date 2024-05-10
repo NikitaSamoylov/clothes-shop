@@ -5,14 +5,17 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useAppDispatch } from "@/lib/hooks";
 import { addProduct } from '@/lib/store/cart/cart-slice';
+import { getResponse } from '@/utils/request';
 import { Toaster } from 'react-hot-toast';
 import { MdOutlineMenu } from "react-icons/md";
 import Logo from './logo.png';
-import { TProduct } from '@/types/product';
+import { addOrder } from '@/lib/store/orders/orders-slice';
+import { TProduct, TOrder, TOrderGoods } from '@/types/product';
 import { HeaderBtns } from './header-btns';
 import { Nav } from '../nav';
 import { MobileNav } from '../nav-mobile';
 import styles from './Header.module.scss';
+import { notifyInfo } from '@/utils/notify';
 
 const Header: React.FC = () => {
   const { data: session, status } = useSession();
@@ -23,8 +26,7 @@ const Header: React.FC = () => {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      fetch(`/api/cart?user=${ session?.user?.id }`)
-        .then(data => data.json())
+      getResponse(`/api/cart?user=${ session?.user?.id }`, 'GET', null)
         .then(data => (
           data.cart.length !== 0 ?
             data.cart[0].goods.map((el: TProduct) => (
@@ -32,7 +34,25 @@ const Header: React.FC = () => {
             )) :
             data
         ))
+        .catch(() => notifyInfo('Ошибка получения корзины'))
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      getResponse(`/api/orders?user=${ session?.user?.id }`, 'GET', null)
+        .then((data) => (
+          data.orders !== undefined ?
+            data.orders[0].orders.map((el: TOrderGoods) => (
+              dispatch(addOrder(el))
+            )) :
+            data
+        ))
+        .catch(() => notifyInfo('Ошибка получения заказов'))
+    } else {
+      return;
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
