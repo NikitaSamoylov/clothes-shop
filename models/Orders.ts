@@ -5,6 +5,7 @@ const { Schema } = mongoose;
 const ordersSchema = new Schema(
   {
     userId: String,
+    userEmail: String,
     orders: [
       {
         price: Number,

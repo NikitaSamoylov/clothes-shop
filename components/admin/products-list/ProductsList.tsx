@@ -243,7 +243,7 @@ const ProductsList: React.FC = () => {
     <h2>Что-то пошло не так</h2> :
     null;
 
-  const productsItems = !isLoading ||
+  const productsItems = !isLoading &&
     !isError ?
     elements :
     null;

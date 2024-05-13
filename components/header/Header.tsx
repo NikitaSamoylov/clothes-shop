@@ -4,13 +4,14 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useAppDispatch } from "@/lib/hooks";
-import { addProduct } from '@/lib/store/cart/cart-slice';
 import { getResponse } from '@/utils/request';
 import { Toaster } from 'react-hot-toast';
 import { MdOutlineMenu } from "react-icons/md";
 import Logo from './logo.png';
+import { addProduct } from '@/lib/store/cart/cart-slice';
 import { addOrder } from '@/lib/store/orders/orders-slice';
-import { TProduct, TOrder, TOrderGoods } from '@/types/product';
+import { addLoading } from '@/lib/store/get-user-loading/get-user-loading';
+import { TProduct, TOrderGoods } from '@/types/product';
 import { HeaderBtns } from './header-btns';
 import { Nav } from '../nav';
 import { MobileNav } from '../nav-mobile';
@@ -24,22 +25,24 @@ const Header: React.FC = () => {
 
   const [mobileMenu, setMobileMenu] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (status === 'authenticated') {
-      getResponse(`/api/cart?user=${ session?.user?.id }`, 'GET', null)
-        .then(data => (
-          data.cart.length !== 0 ?
-            data.cart[0].goods.map((el: TProduct) => (
-              dispatch(addProduct(el))
-            )) :
-            data
-        ))
-        .catch(() => notifyInfo('Ошибка получения корзины'))
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status]);
+  const getUserCart = () => {
+    dispatch(addLoading(true));
+    getResponse(`/api/cart?user=${ session?.user?.id }`, 'GET', null)
+      .then(data => (
+        data.cart.length !== 0 ?
+          data.cart[0].goods.map((el: TProduct) => (
+            dispatch(addProduct(el))
+          )) :
+          data
+      ))
+      .then(() => dispatch(addLoading(false)))
+      .catch(() => {
+        notifyInfo('Ошибка получения корзины');
+        dispatch(addLoading(false));
+      })
+  };
 
-  useEffect(() => {
+  const getUserOrders = () => {
     if (status === 'authenticated') {
       getResponse(`/api/orders?user=${ session?.user?.id }`, 'GET', null)
         .then((data) => (
@@ -53,8 +56,30 @@ const Header: React.FC = () => {
     } else {
       return;
     }
+  };
+
+  useEffect(() => {
+    getUserCart();
+    getUserOrders();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
+
+  // useEffect(() => {
+  //   if (status === 'authenticated') {
+  //     getResponse(`/api/orders?user=${ session?.user?.id }`, 'GET', null)
+  //       .then((data) => (
+  //         data.orders !== undefined ?
+  //           data.orders[0].orders.map((el: TOrderGoods) => (
+  //             dispatch(addOrder(el))
+  //           )) :
+  //           data
+  //       ))
+  //       .catch(() => notifyInfo('Ошибка получения заказов'))
+  //   } else {
+  //     return;
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [status]);
 
   return (
     <div className='container'>

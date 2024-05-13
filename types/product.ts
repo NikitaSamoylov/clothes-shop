@@ -36,6 +36,7 @@ export type TOrderGoods = {
 
 export type TOrder = {
   userId: string | undefined;
+  userEmail: string | null | undefined;
   orders: TOrderGoods[];
 };
 

@@ -9,6 +9,13 @@ const AdminMenu: React.FC = () => {
       </h2>
       <ul className={ styles.adminBlock__list }>
         <li className={ styles.adminBlock__item }>
+          <Link href="/admin/orders"
+            className={ styles.adminBlock__link }
+          >
+            Все заказы
+          </Link>
+        </li>
+        <li className={ styles.adminBlock__item }>
           <Link href="/admin"
             className={ styles.adminBlock__link }
           >

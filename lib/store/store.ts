@@ -4,12 +4,14 @@ import { mainPageFilters } from "./main-page-filters/main-page-filters";
 import { CategoriesSlice } from "./main-page-filters/categories-filters";
 import { CartSlice } from "./cart/cart-slice";
 import { OrdersSlice } from "./orders/orders-slice";
+import { GetUserLoadingSlice } from "./get-user-loading/get-user-loading";
 
 const rootReducer = combineReducers({
   mainPageFilters: mainPageFilters.reducer,
   categoriesFilters: CategoriesSlice.reducer,
   cartList: CartSlice.reducer,
   ordersList: OrdersSlice.reducer,
+  getUserLoading: GetUserLoadingSlice.reducer,
 });
 
 export const store = () => {

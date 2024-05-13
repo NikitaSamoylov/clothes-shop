@@ -5,7 +5,6 @@ import { useAppDispatch } from '@/lib/hooks';
 import { useAppSelector } from '@/lib/hooks';
 import { IoIosArrowDown } from "react-icons/io";
 import { Product } from '../products-item';
-import { addProduct } from '@/lib/store/cart/cart-slice';
 import { TProduct } from '@/types/product';
 import { getProducts } from '@/utils/request';
 import { FiltersList } from '../filters-list';
@@ -37,6 +36,7 @@ const Products: React.FC = () => {
   const { data: session } = useSession();
 
   const dispatch = useAppDispatch();
+  const getUserLoadingStore = useAppSelector(state => state.getUserLoading);
 
   const animatedComponents = makeAnimated();
 
@@ -103,15 +103,19 @@ const Products: React.FC = () => {
     ) :
     null;
 
-  const isLoading = loading ?
+  const isLoading = loading || getUserLoadingStore ?
     <ProductLoader /> :
     null;
 
   const isError = error ?
-    <h2>Что-то пошло не так</h2> :
+    (
+      <h2 style={ { textAlign: 'center' } }>
+        Что-то пошло не так
+      </h2>
+    ) :
     null;
 
-  const productsItems = !isLoading &&
+  const productsItems = !isLoading && !getUserLoadingStore &&
     !isError ?
     (
       <>

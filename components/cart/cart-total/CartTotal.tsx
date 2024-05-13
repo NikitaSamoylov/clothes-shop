@@ -13,7 +13,7 @@ import { TOrder, TProduct } from '@/types/product';
 import styles from './CartTotal.module.scss';
 
 const CartTotal: React.FC = () => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   const cartStore: TProduct[] = useAppSelector(state => state.cartList);
   const ordersStore = useAppSelector(state => state.ordersList);
@@ -38,6 +38,7 @@ const CartTotal: React.FC = () => {
   const prepareOrder = () => {
     const order: TOrder = {
       userId: session?.user?.id,
+      userEmail: session?.user?.email,
       orders: [{
         date: Date.now(),
         price: productsSum - (productsSum * (sale / 100)) + shipping,
