@@ -1,9 +1,13 @@
 'use client';
+import { useSession } from 'next-auth/react';
 import NextImage from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useAppSelector } from '@/lib/hooks';
 import { TProduct } from '@/types/product';
+import { getResponse } from '@/utils/request';
+import { useAppDispatch } from '@/lib/hooks';
+import { addFavorites } from '@/lib/store/favorites/favorites.slice';
 import { AiOutlineHeart } from "react-icons/ai";
 import { BsBagCheck } from "react-icons/bs";
 import { PopupSizes } from './popup-sizes';
@@ -20,20 +24,58 @@ type TProductProps = {
 const Product: React.FC<TProductProps> = (
   { data }
 ) => {
+  const { data: session, status } = useSession();
+
+  const dispatch = useAppDispatch();
+  const favoritesStore = useAppSelector(state => state.favoritesList);
+  const cartStore = useAppSelector(state => state.cartList);
+
   const [inCart, setInCart] = useState(false);
+  const [inFavorites, setInFavorites] = useState(false);
   const [isPopup, setIsPopup] = useState(false);
 
-  const cartStore = useAppSelector(state => state.cartList);
 
   useEffect(() => {
     cartStore.filter(el => el._id === data._id).length !== 0 ?
       setInCart(true) :
-      setInCart(false)
+      setInCart(false);
+
+    favoritesStore.filter(el => el._id === data._id).length !== 0 ?
+      setInFavorites(true) :
+      setInFavorites(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cartStore]);
+  }, [cartStore, favoritesStore]);
 
   const selectPopup = () => {
     setIsPopup(true);
+  };
+
+  const getFavorites = (method: 'POST' | 'PUT') => {
+    getResponse(
+      `/api/favorites`,
+      method,
+      {
+        userId: session?.user?.id,
+        goods: data
+      }
+    )
+      .then(() => dispatch(addFavorites(data)))
+      .then(() => notifyInfo('Товар добавлен в избранное'))
+      .catch(() => notifyInfo('Ошибка добавления в избранное'))
+  };
+
+  const prepareForFavorites = () => {
+    if (status !== 'authenticated') {
+      return;
+    };
+
+    if (favoritesStore.length !== 0) {
+      getFavorites('PUT')
+    };
+
+    if (favoritesStore.length === 0) {
+      getFavorites('POST')
+    };
   };
 
   return (
@@ -67,15 +109,35 @@ const Product: React.FC<TProductProps> = (
           />
         }
         <div className={ styles.productsItem__btns }>
-          <button className={
-            `${ styles.productsItem__btns_item }
-              ${ styles.productsItem__btns_wish }`
-          }>
-            <AiOutlineHeart
-              color='grey'
-              size={ 19 }
-            />
-          </button>
+          {
+            !inFavorites ?
+              (
+                <button className={
+                  `${ styles.productsItem__btns_item }
+                   ${ styles.productsItem__btns_wish }`
+                }
+                  onClick={ prepareForFavorites }
+                >
+                  <AiOutlineHeart
+                    color='grey'
+                    size={ 19 }
+                  />
+                </button>
+              ) :
+              (
+                <button className={
+                  `${ styles.productsItem__btns_item }
+                   ${ styles.productsItem__btns_wish }`
+                }
+                  onClick={ () => notifyInfo('Товар уже в избранном') }
+                >
+                  <AiOutlineHeart
+                    color='lightgrey'
+                    size={ 19 }
+                  />
+                </button>
+              )
+          }
           {
             inCart ?
               (

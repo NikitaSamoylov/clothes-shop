@@ -40,3 +40,7 @@ export type TOrder = {
   orders: TOrderGoods[];
 };
 
+export type TFavorites = {
+  userId: string | undefined;
+  goods: TProduct;
+};

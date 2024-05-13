@@ -4,12 +4,12 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useAppDispatch } from "@/lib/hooks";
-import { getResponse } from '@/utils/request';
 import { Toaster } from 'react-hot-toast';
 import { MdOutlineMenu } from "react-icons/md";
 import Logo from './logo.png';
 import { addProduct } from '@/lib/store/cart/cart-slice';
 import { addOrder } from '@/lib/store/orders/orders-slice';
+import { addFavorites } from '@/lib/store/favorites/favorites.slice';
 import { addLoading } from '@/lib/store/get-user-loading/get-user-loading';
 import { TProduct, TOrderGoods } from '@/types/product';
 import { HeaderBtns } from './header-btns';
@@ -25,46 +25,25 @@ const Header: React.FC = () => {
 
   const [mobileMenu, setMobileMenu] = useState<boolean>(false);
 
-  const getUserCart = () => {
-    dispatch(addLoading(true));
-    getResponse(`/api/cart?user=${ session?.user?.id }`, 'GET', null)
-      .then(data => (
-        data.cart.length !== 0 ?
-          data.cart[0].goods.map((el: TProduct) => (
-            dispatch(addProduct(el))
-          )) :
-          data
-      ))
-      .then(() => dispatch(addLoading(false)))
-      .catch(() => {
-        notifyInfo('Ошибка получения корзины');
-        dispatch(addLoading(false));
-      })
-  };
+  // const getUserCart = () => {
+  //   dispatch(addLoading(true));
 
-  const getUserOrders = () => {
-    if (status === 'authenticated') {
-      getResponse(`/api/orders?user=${ session?.user?.id }`, 'GET', null)
-        .then((data) => (
-          data.orders !== undefined ?
-            data.orders[0].orders.map((el: TOrderGoods) => (
-              dispatch(addOrder(el))
-            )) :
-            data
-        ))
-        .catch(() => notifyInfo('Ошибка получения заказов'))
-    } else {
-      return;
-    }
-  };
+  //   getResponse(`/api/cart?user=${ session?.user?.id }`, 'GET', null)
+  //     .then(data => (
+  //       data.cart.length !== 0 ?
+  //         data.cart[0].goods.map((el: TProduct) => (
+  //           dispatch(addProduct(el))
+  //         )) :
+  //         data
+  //     ))
+  //     .then(() => dispatch(addLoading(false)))
+  //     .catch(() => {
+  //       notifyInfo('Ошибка получения корзины');
+  //       dispatch(addLoading(false));
+  //     })
+  // };
 
-  useEffect(() => {
-    getUserCart();
-    getUserOrders();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status]);
-
-  // useEffect(() => {
+  // const getUserOrders = () => {
   //   if (status === 'authenticated') {
   //     getResponse(`/api/orders?user=${ session?.user?.id }`, 'GET', null)
   //       .then((data) => (
@@ -78,8 +57,93 @@ const Header: React.FC = () => {
   //   } else {
   //     return;
   //   }
+  // };
+
+  // const getUseFavorites = () => {
+  //   dispatch(addLoading(true));
+
+  //   if (status === 'authenticated') {
+  //     getResponse(`/api/favorites?user=${ session?.user?.id }`, 'GET', null)
+  //       .then((data) => (
+  //         data.favoritesList.length !== 0 ?
+  //           data.favoritesList[0].goods.map((el: TProduct) => (
+  //             dispatch(addFavorites(el))
+  //           )) :
+  //           data
+  //       ))
+  //       .then(() => dispatch(addLoading(false)))
+  //       .catch(() => {
+  //         dispatch(addLoading(false))
+  //         notifyInfo('Ошибка получения заказов');
+  //       })
+  //   } else {
+  //     return;
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   getUserCart();
+  //   getUserOrders();
+  //   getUseFavorites();
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [status]);
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      dispatch(addLoading(true));
+
+      Promise.all([
+        fetch(`/api/cart?user=${ session?.user?.id }`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }),
+        fetch(
+          `/api/orders?user=${ session?.user?.id }`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+        ),
+        fetch(`/api/favorites?user=${ session?.user?.id }`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }),
+      ])
+        .then((response) => Promise.all(response.map((res) => res.json())))
+        .then((data) => {
+          data[0].cart.length !== 0 ?
+            data[0].cart[0].goods.map((el: TProduct) => (
+              dispatch(addProduct(el))
+            )) :
+            data;
+
+          data[1].orders.length !== 0 ?
+            data[1].orders[0].orders.map((el: TOrderGoods) => (
+              dispatch(addOrder(el))
+            )) :
+            data;
+
+          data[2].favoritesList.length !== 0 ?
+            data[2].favoritesList[0].goods.map((el: TProduct) => (
+              dispatch(addFavorites(el))
+            )) :
+            data;
+        })
+        .then(() => dispatch(addLoading(false)))
+        .catch((err) => {
+          console.log(err);
+          dispatch(addLoading(false));
+        })
+    } else {
+      return;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
 
   return (
     <div className='container'>

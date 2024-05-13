@@ -4,7 +4,8 @@ import { useSession } from "next-auth/react";
 import NextImage from 'next/image';
 import { useAppSelector, useAppDispatch } from "@/lib/hooks";
 import { addProduct } from "@/lib/store/cart/cart-slice";
-import { TProductForUpload, TUserCart } from "@/types/product";
+import { TUserCart, TProduct } from "@/types/product";
+import { addFavorites } from "@/lib/store/favorites/favorites.slice";
 import { formatPrice } from "@/utils/intl";
 import { Button } from "@/components/button";
 import { getResponse } from "@/utils/request";
@@ -24,17 +25,20 @@ const LoadProduct: React.FC<TLoadProductProps> = (
   { params: { id } }
 ) => {
 
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const cartStore = useAppSelector(state => state.cartList);
+  const favoritesStore = useAppSelector(state => state.favoritesList);
+  const userLoading = useAppSelector(state => state.getUserLoading);
 
   const dispatch = useAppDispatch();
 
-  const [product, setProduct] = useState<TProductForUpload>();
+  const [product, setProduct] = useState<TProduct | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [size, setSize] = useState<string[]>([]);
   const [inCart, setInCart] = useState(false);
+  const [inFavorites, setInFavorites] = useState(false);
 
   useEffect(() => {
     fetch(`/api/get-single-product?id=${ id }`)
@@ -49,8 +53,13 @@ const LoadProduct: React.FC<TLoadProductProps> = (
     setInCart(
       cartStore.filter(el => el._id === product?._id)
         .length !== 0 ? true : false
+    );
+
+    setInFavorites(
+      favoritesStore.filter(el => el._id === product?._id)
+        .length !== 0 ? true : false
     )
-  }, [cartStore, product?._id])
+  }, [cartStore, product?._id, favoritesStore])
 
   const addToCart = (
     method: 'POST' | 'PUT', productForSend: TUserCart
@@ -95,11 +104,41 @@ const LoadProduct: React.FC<TLoadProductProps> = (
     }
   };
 
+  const getFavorites = (method: 'POST' | 'PUT') => {
+    if (product !== null) {
+      getResponse(
+        `/api/favorites`,
+        method,
+        {
+          userId: session?.user?.id,
+          goods: product
+        }
+      )
+        .then(() => dispatch(addFavorites(product)))
+        .then(() => notifyInfo('Товар добавлен в избранное'))
+        .catch(() => notifyInfo('Ошибка добавления в избранное'))
+    };
+  };
+
+  const prepareForFavorites = () => {
+    if (status !== 'authenticated') {
+      return;
+    };
+
+    if (favoritesStore.length !== 0) {
+      getFavorites('PUT')
+    };
+
+    if (favoritesStore.length === 0) {
+      getFavorites('POST')
+    };
+  };
+
   return (
     <div className="container">
       <div className={ styles.product__container }>
         {
-          product && (
+          product && !isError && !isLoading && !userLoading && (
             <>
               <div className={ styles.product }>
                 <div className={ styles.product__bg }>
@@ -190,9 +229,23 @@ const LoadProduct: React.FC<TLoadProductProps> = (
                                 >
                                   <Button title={ 'в корзину' } />
                                 </div>
-                                <div>
-                                  <Button title={ 'в избранное' } />
-                                </div>
+                                {
+                                  !inFavorites ?
+                                    (
+                                      <div
+                                        onClick={ prepareForFavorites }
+                                      >
+                                        <Button title={ 'в избранное' } />
+                                      </div>
+                                    ) :
+                                    (
+                                      <div
+                                        onClick={ () => notifyInfo('Товар уже в избранном') }
+                                      >
+                                        <Button title={ 'в избранном' } />
+                                      </div>
+                                    )
+                                }
                               </>
                             )
                         }
@@ -207,7 +260,7 @@ const LoadProduct: React.FC<TLoadProductProps> = (
             </>
           )
         }
-        { isLoading && <ProductLoader /> }
+        { isLoading || userLoading && <ProductLoader /> }
         { isError && <h2>Что-то пошло не так...</h2> }
       </div>
     </div>

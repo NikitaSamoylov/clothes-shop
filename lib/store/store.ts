@@ -5,6 +5,7 @@ import { CategoriesSlice } from "./main-page-filters/categories-filters";
 import { CartSlice } from "./cart/cart-slice";
 import { OrdersSlice } from "./orders/orders-slice";
 import { GetUserLoadingSlice } from "./get-user-loading/get-user-loading";
+import { FavoritesReducer } from "./favorites/favorites.slice";
 
 const rootReducer = combineReducers({
   mainPageFilters: mainPageFilters.reducer,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   cartList: CartSlice.reducer,
   ordersList: OrdersSlice.reducer,
   getUserLoading: GetUserLoadingSlice.reducer,
+  favoritesList: FavoritesReducer.reducer,
 });
 
 export const store = () => {

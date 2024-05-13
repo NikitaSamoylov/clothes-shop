@@ -14,6 +14,7 @@ const HeaderBtns: React.FC = () => {
   const { status } = useSession();
 
   const cartStore = useAppSelector(state => state.cartList);
+  const favoritesStore = useAppSelector(state => state.favoritesList);
 
   const [menuState, setMenuState] = useState<boolean>(false);
 
@@ -45,9 +46,20 @@ const HeaderBtns: React.FC = () => {
           )
       }
       <button className={ styles.btn__item }>
-        <AiOutlineHeart size={ 20 }
-          color="grey"
-        />
+        <Link href="/favorites">
+          <AiOutlineHeart size={ 20 }
+            color="grey"
+          />
+          {
+            status === 'authenticated' && (
+              <div className={ styles.btn__icon }>
+                <span className={ styles.btn__icon_text }>
+                  { favoritesStore.length }
+                </span>
+              </div>
+            )
+          }
+        </Link>
       </button>
       <button className={ styles.btn__item }>
         <Link href="/cart">
