@@ -1,9 +1,9 @@
-import { FavoritesCard } from "@/components/favorites/favorites-card";
+import { FavoritesList } from "@/components/favorites/favorites-list";
 
 const FavoritesPage: React.FC = () => {
   return (
-    <section>
-      <FavoritesCard />
+    <section className="container">
+      <FavoritesList />
     </section>
   )
 };
