@@ -50,7 +50,7 @@ const customStyles: TableStyles | undefined = {
     },
     pageButtonsStyle: {
       color: 'grey',
-      fill: 'none',
+      fill: 'lightgrey',
       backgroundColor: 'transparent'
     },
   },

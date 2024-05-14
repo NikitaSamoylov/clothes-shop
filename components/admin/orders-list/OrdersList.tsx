@@ -45,8 +45,8 @@ const customStyles: TableStyles | undefined = {
     },
     pageButtonsStyle: {
       color: 'grey',
-      fill: 'none',
-      backgroundColor: 'lightgrey'
+      fill: 'lightgrey',
+      backgroundColor: 'transparent'
     },
   },
 };
@@ -59,7 +59,6 @@ const paginationComponentOptions = {
 };
 
 const OrdersList: React.FC = () => {
-  const [orders, setOrders] = useState<TOrder[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
   const [tableData, setTableData] = useState<any>([]);
@@ -78,14 +77,13 @@ const OrdersList: React.FC = () => {
   const renderElements = (data: TOrder[]) => {
     setLoading(false);
     setError(false);
-    // setOrders(data);
     setTableData(data.map(el => (
       el.orders.map(item => {
         return {
           client: el.userEmail,
           price: item.price,
           date: <p style={ { maxWidth: 200 } }>
-            { (new Date(item.date).toLocaleString()) }
+            { new Date(item.date).toLocaleString() }
           </p>,
           goods: item.goods.map(el => {
             return <p key={ el._id }>
@@ -96,17 +94,6 @@ const OrdersList: React.FC = () => {
       })
     )).flat());
   };
-
-  // const tableData = orders.map(el => (
-  //   el.orders.map(item => {
-  //     return {
-  //       client: el.userEmail,
-  //       price: item.price,
-  //       date: item.date,
-  //       goods: item.goods,
-  //     }
-  //   })
-  // )).flat();
 
   const catchError = () => {
     setLoading(false);
