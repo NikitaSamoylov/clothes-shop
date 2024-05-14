@@ -21,16 +21,12 @@ type TMenuPopProps = {
 
 const userMenuItems = [
   {
-    title: 'аккаунт',
-    link: '/',
-  },
-  {
     title: 'избранное',
-    link: '/',
+    link: '/favorites',
   },
   {
     title: 'корзина',
-    link: '/',
+    link: '/cart',
   },
   {
     title: 'выйти',

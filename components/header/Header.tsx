@@ -16,7 +16,6 @@ import { HeaderBtns } from './header-btns';
 import { Nav } from '../nav';
 import { MobileNav } from '../nav-mobile';
 import styles from './Header.module.scss';
-import { notifyInfo } from '@/utils/notify';
 
 const Header: React.FC = () => {
   const { data: session, status } = useSession();
@@ -24,69 +23,6 @@ const Header: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const [mobileMenu, setMobileMenu] = useState<boolean>(false);
-
-  // const getUserCart = () => {
-  //   dispatch(addLoading(true));
-
-  //   getResponse(`/api/cart?user=${ session?.user?.id }`, 'GET', null)
-  //     .then(data => (
-  //       data.cart.length !== 0 ?
-  //         data.cart[0].goods.map((el: TProduct) => (
-  //           dispatch(addProduct(el))
-  //         )) :
-  //         data
-  //     ))
-  //     .then(() => dispatch(addLoading(false)))
-  //     .catch(() => {
-  //       notifyInfo('Ошибка получения корзины');
-  //       dispatch(addLoading(false));
-  //     })
-  // };
-
-  // const getUserOrders = () => {
-  //   if (status === 'authenticated') {
-  //     getResponse(`/api/orders?user=${ session?.user?.id }`, 'GET', null)
-  //       .then((data) => (
-  //         data.orders !== undefined ?
-  //           data.orders[0].orders.map((el: TOrderGoods) => (
-  //             dispatch(addOrder(el))
-  //           )) :
-  //           data
-  //       ))
-  //       .catch(() => notifyInfo('Ошибка получения заказов'))
-  //   } else {
-  //     return;
-  //   }
-  // };
-
-  // const getUseFavorites = () => {
-  //   dispatch(addLoading(true));
-
-  //   if (status === 'authenticated') {
-  //     getResponse(`/api/favorites?user=${ session?.user?.id }`, 'GET', null)
-  //       .then((data) => (
-  //         data.favoritesList.length !== 0 ?
-  //           data.favoritesList[0].goods.map((el: TProduct) => (
-  //             dispatch(addFavorites(el))
-  //           )) :
-  //           data
-  //       ))
-  //       .then(() => dispatch(addLoading(false)))
-  //       .catch(() => {
-  //         dispatch(addLoading(false))
-  //         notifyInfo('Ошибка получения заказов');
-  //       })
-  //   } else {
-  //     return;
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getUserCart();
-  //   getUserOrders();
-  //   getUseFavorites();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [status]);
 
   useEffect(() => {
     if (status === 'authenticated') {
