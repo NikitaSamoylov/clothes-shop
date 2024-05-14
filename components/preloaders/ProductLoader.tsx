@@ -9,7 +9,7 @@ const override = {
 
 const ProductLoader = () => (
   <ClipLoader
-    color="rgb(97 195 228)"
+    color="rgb(147 200 211)"
     cssOverride={ override }
     size={ 80 }
     aria-label="Loading Spinner"

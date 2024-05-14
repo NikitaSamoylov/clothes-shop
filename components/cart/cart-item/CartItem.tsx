@@ -13,13 +13,12 @@ import { Clicker } from '../clicker';
 import { IoMdClose } from "react-icons/io";
 import { TProduct } from '@/types/product';
 import styles from './CartItem.module.scss';
+import defaultImg from '../../../public/default-img.png';
+import { notifyInfo } from '@/utils/notify';
 
 type TCartItemProps = {
   item: TProduct;
 };
-
-import defaultImg from '../../../public/default-img.png';
-import { notifyInfo } from '@/utils/notify';
 
 const CartItem: React.FC<TCartItemProps> = ({ item }) => {
   const { data: session } = useSession();

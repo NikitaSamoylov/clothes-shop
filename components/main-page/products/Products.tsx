@@ -1,10 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
-import { useAppDispatch } from '@/lib/hooks';
 import { useAppSelector } from '@/lib/hooks';
 import { IoIosArrowDown } from "react-icons/io";
-// import { Product } from '../products-item';
+import { Button } from '@/components/button';
 import { Product } from '@/components/product-card/ProductCard';
 import { TProduct } from '@/types/product';
 import { getProducts } from '@/utils/request';
@@ -31,13 +29,16 @@ const sortOptions: TSortOptions[] = [
 ];
 
 const Products: React.FC = () => {
-  const brandsFiltersStore = useAppSelector(state => state.mainPageFilters);
-  const categoriesFiltersStore = useAppSelector(state => state.categoriesFilters);
+  const brandsFiltersStore = useAppSelector(
+    state => state.mainPageFilters
+  );
+  const categoriesFiltersStore = useAppSelector(
+    state => state.categoriesFilters
+  );
 
-  const { data: session } = useSession();
-
-  const dispatch = useAppDispatch();
-  const getUserLoadingStore = useAppSelector(state => state.getUserLoading);
+  const getUserLoadingStore = useAppSelector(
+    state => state.getUserLoading
+  );
 
   const animatedComponents = makeAnimated();
 
@@ -49,7 +50,10 @@ const Products: React.FC = () => {
   const [sortPrice, setSortPrice] = useState<keyof typeof SORTBY>(SORTBY.asc);
   const [isFilters, setIsFilters] = useState(false);
 
-  const setUpUrl = (skip = products.length, sort = sortPrice) => {
+  const setUpUrl = (
+    skip = products.length,
+    sort = sortPrice
+  ) => {
     skip === 0 ?
       setLoading(true) :
       skip
@@ -68,14 +72,18 @@ const Products: React.FC = () => {
       .then((data) => {
         skip === 0 ?
           setProducts(data) :
-          setProducts(products => [...products, ...data])
+          setProducts(
+            products => [...products, ...data]
+          )
       })
       .then(() => setError(false))
       .then(() => setLoading(false))
       .catch(catchError)
   };
 
-  const onPriceSort = (value: keyof typeof SORTBY) => {
+  const onPriceSort = (
+    value: keyof typeof SORTBY
+  ) => {
     setIsFilters(false);
     setSortPrice(value);
     setUpUrl(0, value);
@@ -89,7 +97,9 @@ const Products: React.FC = () => {
   useEffect(() => {
     setUpUrl(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [brandsFiltersStore, categoriesFiltersStore]);
+  }, [
+    brandsFiltersStore, categoriesFiltersStore
+  ]);
 
   const elements = products ?
     (
@@ -104,8 +114,13 @@ const Products: React.FC = () => {
     ) :
     null;
 
-  const isLoading = loading || getUserLoadingStore ?
-    <ProductLoader /> :
+  const isLoading = loading ||
+    getUserLoadingStore ?
+    (
+      <div style={ { height: '100vh' } }>
+        <ProductLoader />
+      </div>
+    ) :
     null;
 
   const isError = error ?
@@ -116,7 +131,8 @@ const Products: React.FC = () => {
     ) :
     null;
 
-  const productsItems = !isLoading && !getUserLoadingStore &&
+  const productsItems = !isLoading &&
+    !getUserLoadingStore &&
     !isError ?
     (
       <>
@@ -127,11 +143,11 @@ const Products: React.FC = () => {
           products.length % 2 === 0 &&
             products.length >= limit ?
             (
-              <button onClick={ () => setUpUrl() }
-                className={ styles.products__btn }
+              <div className={ styles.products__btn }
+                onClick={ () => setUpUrl() }
               >
-                Загрузить еще
-              </button>
+                <Button title={ 'Загрузить еще' } />
+              </div>
             ) :
             null
         }
@@ -150,7 +166,9 @@ const Products: React.FC = () => {
         <div className={ styles.products__sort }>
           <div style={ { position: 'relative' } }>
             <div className={ styles.products__filters_mobile }
-              onClick={ () => setIsFilters(isFilters => !isFilters) }
+              onClick={
+                () => setIsFilters(isFilters => !isFilters)
+              }
             >
               <span className={ styles.products__filters_title }>
                 Фильтры
@@ -200,7 +218,11 @@ const Products: React.FC = () => {
                 primary: '#c5e8f2',
               },
             }) }
-            onChange={ (options: any) => onPriceSort(options.value) }
+            onChange={
+              (options: any) => (
+                onPriceSort(options.value)
+              )
+            }
             isDisabled={ isFilters ? true : false }
           />
         </div>

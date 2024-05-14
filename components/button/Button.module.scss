@@ -6,12 +6,15 @@
   padding: 7px 15px;
   border: 1px solid lightgrey;
   border-radius: 5px;
+  background-color: #fff;
   font-family: inherit;
   transition: .3s;
   text-align: center;
   margin: 0 auto 15px auto;
+}
 
-  &:hover {
+@media (hover: hover) {
+  .btn:hover {
     color: #fff;
     border-color: $form-btn-color;
     background-color: $form-btn-color;

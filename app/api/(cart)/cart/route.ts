@@ -91,8 +91,6 @@ export const DELETE = async (request: any) => {
 
   await connect();
 
-  console.log('deleting')
-
   const existingCart = await Cart.findOne({ userId });
 
   if (!existingCart) {

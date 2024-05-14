@@ -136,7 +136,7 @@
     transition: .3s;
   }
 
-  &__sizes_item:hover {
+  &__sizes_btn_selected {
     background-color: $form-btn-color;
     color: #fff;
     border-color: $form-btn-color;

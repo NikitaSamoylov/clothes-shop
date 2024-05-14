@@ -37,23 +37,9 @@
   }
 
   &__btn {
-    display: block;
-    font-size: 1.6rem;
-    padding: 10px 15px;
-    border: 1px solid lightgrey;
-    border-radius: 5px;
-    font-family: inherit;
-    transition: .3s;
-    text-align: center;
     margin-bottom: 35px;
     margin-left: auto;
     margin-right: auto;
-  }
-
-  &__btn:hover {
-    color: #fff;
-    border-color: $form-btn-color;
-    background-color: $form-btn-color;
   }
 
   &__sort {

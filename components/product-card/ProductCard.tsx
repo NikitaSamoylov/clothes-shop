@@ -52,7 +52,7 @@ const Product: React.FC<TProductProps> = (
 
   const getFavorites = (method: 'POST' | 'PUT') => {
     getResponse(
-      `/api/favorites`,
+      `/api/update-favorites`,
       method,
       {
         userId: session?.user?.id,

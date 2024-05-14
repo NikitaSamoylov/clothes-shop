@@ -107,7 +107,7 @@ const LoadProduct: React.FC<TLoadProductProps> = (
   const getFavorites = (method: 'POST' | 'PUT') => {
     if (product !== null) {
       getResponse(
-        `/api/favorites`,
+        `/api/update-favorites`,
         method,
         {
           userId: session?.user?.id,
@@ -193,34 +193,63 @@ const LoadProduct: React.FC<TLoadProductProps> = (
                         )
                     }
                   </div>
-                  <ul className={ styles.product__sizes }>
-                    {
-                      product.sizes.map(el => {
-                        return (
-                          <li key={ el }
-                            className={ styles.product__sizes_item }
-                          >
-                            <button
-                              className={ styles.product__sizes_btn }
-                              onClick={ () => setSize([el]) }
-                            >
-                              { el }
-                            </button>
-                          </li>
-                        )
-                      })
-                    }
-                  </ul>
+                  {
+                    !inCart && (
+                      <ul className={ styles.product__sizes }>
+                        {
+                          product.sizes.map(el => {
+                            return (
+                              <li key={ el }
+                                className={ styles.product__sizes_item }
+                              >
+                                <button
+                                  className={
+                                    !size.includes(el) ?
+                                      styles.product__sizes_btn :
+                                      `${ styles.product__sizes_btn }
+                                   ${ styles.product__sizes_btn_selected } `
+                                  }
+                                  onClick={ () => setSize([el]) }
+                                >
+                                  { el }
+                                </button>
+                              </li>
+                            )
+                          })
+                        }
+                      </ul>
+                    )
+                  }
                   {
                     product.inStock && (
                       <div className={ styles.product__buttons }>
                         {
                           inCart ?
                             (
-                              <div className={ styles.product__buttons_item }
-                              >
-                                <Button title={ 'в корзине' } />
-                              </div>
+                              <>
+                                <div className={ styles.product__buttons_item }
+                                  onClick={ () => notifyInfo('Товар уже в корзине') }
+                                >
+                                  <Button title={ 'в корзине' } />
+                                </div>
+                                {
+                                  !inFavorites ?
+                                    (
+                                      <div
+                                        onClick={ prepareForFavorites }
+                                      >
+                                        <Button title={ 'в избранное' } />
+                                      </div>
+                                    ) :
+                                    (
+                                      <div
+                                        onClick={ () => notifyInfo('Товар уже в избранном') }
+                                      >
+                                        <Button title={ 'в избранном' } />
+                                      </div>
+                                    )
+                                }
+                              </>
                             ) :
                             (
                               <>
@@ -261,7 +290,11 @@ const LoadProduct: React.FC<TLoadProductProps> = (
           )
         }
         { isLoading || userLoading && <ProductLoader /> }
-        { isError && <h2>Что-то пошло не так...</h2> }
+        { isError && (
+          <h2 style={ { textAlign: 'center' } }>
+            Что-то пошло не так...
+          </h2>
+        ) }
       </div>
     </div>
   )
