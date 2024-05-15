@@ -1,10 +1,18 @@
 @import '../../styles/vars';
+@import '../../styles/mixins';
 
 .loginForm {
   display: flex;
   justify-content: center;
   align-items: flex-start;
   padding-right: 25px;
+
+  &__img {
+
+    @include tablet-landscape {
+      display: none;
+    }
+  }
 }
 
 .form {

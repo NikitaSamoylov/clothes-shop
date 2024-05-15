@@ -25,59 +25,55 @@ const Header: React.FC = () => {
   const [mobileMenu, setMobileMenu] = useState<boolean>(false);
 
   useEffect(() => {
-    if (status === 'authenticated') {
-      dispatch(addLoading(true));
+    dispatch(addLoading(true));
 
-      Promise.all([
-        fetch(`/api/cart?user=${ session?.user?.id }`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }),
-        fetch(
-          `/api/orders?user=${ session?.user?.id }`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
+    Promise.all([
+      fetch(`/api/cart?user=${ session?.user?.id }`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
         }
-        ),
-        fetch(`/api/favorites?user=${ session?.user?.id }`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }),
-      ])
-        .then((response) => Promise.all(response.map((res) => res.json())))
-        .then((data) => {
-          data[0].cart.length !== 0 ?
-            data[0].cart[0].goods.map((el: TProduct) => (
-              dispatch(addProduct(el))
-            )) :
-            data;
+      }),
+      fetch(
+        `/api/orders?user=${ session?.user?.id }`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+      ),
+      fetch(`/api/favorites?user=${ session?.user?.id }`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }),
+    ])
+      .then((response) => Promise.all(response.map((res) => res.json())))
+      .then((data) => {
+        data[0].cart.length !== 0 ?
+          data[0].cart[0].goods.map((el: TProduct) => (
+            dispatch(addProduct(el))
+          )) :
+          data;
 
-          data[1].orders.length !== 0 ?
-            data[1].orders[0].orders.map((el: TOrderGoods) => (
-              dispatch(addOrder(el))
-            )) :
-            data;
+        data[1].orders.length !== 0 ?
+          data[1].orders[0].orders.map((el: TOrderGoods) => (
+            dispatch(addOrder(el))
+          )) :
+          data;
 
-          data[2].favoritesList.length !== 0 ?
-            data[2].favoritesList[0].goods.map((el: TProduct) => (
-              dispatch(addFavorites(el))
-            )) :
-            data;
-        })
-        .then(() => dispatch(addLoading(false)))
-        .catch((err) => {
-          console.log(err);
-          dispatch(addLoading(false));
-        })
-    } else {
-      return;
-    }
+        data[2].favoritesList.length !== 0 ?
+          data[2].favoritesList[0].goods.map((el: TProduct) => (
+            dispatch(addFavorites(el))
+          )) :
+          data;
+      })
+      .then(() => dispatch(addLoading(false)))
+      .catch((err) => {
+        console.log(err);
+        dispatch(addLoading(false));
+      })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 

@@ -7,7 +7,7 @@ const Nav: React.FC = () => {
       <nav className={ styles.nav }>
         <ul className={ styles.nav__list }>
           <li className={ styles.nav__item }>
-            <Link href='/'
+            <Link href='/contacts'
               className={ styles.nav__link }
             >
               контакты

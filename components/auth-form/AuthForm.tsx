@@ -48,7 +48,7 @@ const AuthForm: React.FC = () => {
 
   return (
     <section className={ styles.loginForm }>
-      <div>
+      <div className={ styles.loginForm__img }>
         <Image
           src={ FormImage }
           width={ FormImage.width }

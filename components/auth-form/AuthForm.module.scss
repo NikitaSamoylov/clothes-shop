@@ -1,10 +1,18 @@
 @import '../../styles/vars';
+@import '../../styles/mixins';
 
 .loginForm {
   display: flex;
   justify-content: center;
   align-items: flex-start;
   padding-right: 25px;
+
+  &__img {
+
+    @include tablet-landscape {
+      display: none;
+    }
+  }
 }
 
 .form {
@@ -34,6 +42,10 @@
     font-size: 1.6rem;
     color: $primary-font-color;
     margin-bottom: 10px;
+
+    @include mobile {
+      text-align: center;
+    }
   }
 
   &__btn {
@@ -50,6 +62,10 @@
     color: $primary-font-color;
     font-size: 16px;
     padding-top: 15px;
+
+    @include tablet-landscape {
+      text-align: center;
+    }
   }
 
   &__msg_link {

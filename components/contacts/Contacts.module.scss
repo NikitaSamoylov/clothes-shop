@@ -1,0 +1,22 @@
+.contacts {
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__item {
+    width: 290px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    outline: 1px solid lightgrey;
+    font-size: 1.6rem;
+    font-family: inherit;
+  }
+
+  &__item:not(:last-child) {
+    margin-bottom: 15px;
+  }
+}

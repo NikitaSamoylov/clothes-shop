@@ -24,7 +24,7 @@ const MobileNav: React.FC<TMobileNavProps> = (
       {
         mobileMenu && (
           <ul className={ styles.mobileNav__list }>
-            <Link href="/"
+            <Link href="/contacts"
               className={ styles.mobileNav__link }
               onClick={ setMobileMenu }
             >

@@ -52,7 +52,7 @@ const SignupForm: React.FC = () => {
 
   return (
     <section className={ styles.loginForm }>
-      <div>
+      <div className={ styles.loginForm__img }>
         <Image
           src={ FormImageSignup }
           width={ FormImageSignup.width }
