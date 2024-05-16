@@ -13,13 +13,13 @@ const Nav: React.FC = () => {
               контакты
             </Link>
           </li>
-          <li className={ styles.nav__item }>
+          {/* <li className={ styles.nav__item }>
             <Link href='/'
               className={ styles.nav__link }
             >
               доставка и оплата
             </Link>
-          </li>
+          </li> */}
         </ul>
       </nav>
     </div>

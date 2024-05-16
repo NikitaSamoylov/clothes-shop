@@ -32,14 +32,14 @@ const MobileNav: React.FC<TMobileNavProps> = (
                 Контакты
               </li>
             </Link>
-            <Link href="/"
+            {/* <Link href="/"
               className={ styles.mobileNav__link }
               onClick={ setMobileMenu }
             >
               <li className={ styles.mobileNav__item }>
                 Доставка и оплата
               </li>
-            </Link>
+            </Link> */}
           </ul>
         )
       }

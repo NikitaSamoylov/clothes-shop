@@ -27,6 +27,11 @@ const Header: React.FC = () => {
   useEffect(() => {
     dispatch(addLoading(true));
 
+    if (status !== 'authenticated') {
+      dispatch(addLoading(false));
+      return;
+    }
+
     Promise.all([
       fetch(`/api/cart?user=${ session?.user?.id }`, {
         method: 'GET',
